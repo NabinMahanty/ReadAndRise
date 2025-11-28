@@ -9,8 +9,9 @@ require_admin();
 $stmt = $pdo->query("SELECT COUNT(*) AS c FROM notes WHERE status = 'pending'");
 $pendingNotes = $stmt->fetch(PDO::FETCH_ASSOC)['c'] ?? 0;
 
-// blogs table abhi nahi hai, to yahan 0 rakhenge (baad me replace karenge)
-$pendingBlogs = 0;
+// pending blogs count
+$stmt2 = $pdo->query("SELECT COUNT(*) AS c FROM blogs WHERE status = 'pending'");
+$pendingBlogs = $stmt2->fetch(PDO::FETCH_ASSOC)['c'] ?? 0;
 ?>
 
 <div class="card">
@@ -31,7 +32,7 @@ $pendingBlogs = 0;
         <li>
           • Pending Struggle Stories:
           <strong><?php echo (int)$pendingBlogs; ?></strong>
-          – (coming soon)
+          – <a href="blogs_pending.php">Review now</a>
         </li>
       </ul>
     </div>
