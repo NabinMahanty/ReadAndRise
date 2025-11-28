@@ -1,11 +1,10 @@
 <?php
 require_once "../includes/db.php";
 require_once "../includes/auth.php";
-require_once "../includes/header.php";
 
 require_admin();
 
-// action
+// action - BEFORE including header
 if (isset($_GET['action'], $_GET['id'])) {
   $action = $_GET['action'];
   $id     = (int) $_GET['id'];
@@ -21,6 +20,8 @@ if (isset($_GET['action'], $_GET['id'])) {
     exit;
   }
 }
+
+require_once "../includes/header.php";
 
 $stmt = $pdo->query("
     SELECT b.id, b.title, b.category, b.created_at, u.name AS author

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://readandrise.in/public/index.php</loc>
+    <lastmod>2025-11-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Study Materials Page -->
+  <url>
+    <loc>https://readandrise.in/public/notes.php</loc>
+    <lastmod>2025-11-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Success Stories Page -->
+  <url>
+    <loc>https://readandrise.in/public/blogs.php</loc>
+    <lastmod>2025-11-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Registration Page -->
+  <url>
+    <loc>https://readandrise.in/public/register.php</loc>
+    <lastmod>2025-11-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Login Page -->
+  <url>
+    <loc>https://readandrise.in/public/login.php</loc>
+    <lastmod>2025-11-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- 
+  Note: Individual note pages and blog posts should be dynamically added
+  You can create a sitemap generator script in PHP to automatically include all approved notes and blogs
+  -->
+
+</urlset>

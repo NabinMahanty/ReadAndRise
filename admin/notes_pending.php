@@ -1,11 +1,10 @@
 <?php
 require_once "../includes/db.php";
 require_once "../includes/auth.php";
-require_once "../includes/header.php";
 
 require_admin();
 
-// action handle (approve / reject)
+// action handle (approve / reject) - BEFORE including header
 if (isset($_GET['action'], $_GET['id'])) {
   $action = $_GET['action'];
   $id     = (int) $_GET['id'];
@@ -22,6 +21,8 @@ if (isset($_GET['action'], $_GET['id'])) {
     exit;
   }
 }
+
+require_once "../includes/header.php";
 
 // fetch all pending notes
 $stmt = $pdo->query("

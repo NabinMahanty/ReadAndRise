@@ -1,0 +1,33 @@
+# robots.txt for ReadAndRise.in
+# Optimized for search engine crawling
+
+User-agent: *
+Allow: /public/
+Allow: /assets/
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /uploads/notes/
+
+# Sitemap location
+Sitemap: https://readandrise.in/sitemap.xml
+
+# Crawl delay (optional - helps prevent server overload)
+Crawl-delay: 1
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /public/
+Allow: /assets/
+Disallow: /admin/
+
+User-agent: Bingbot
+Allow: /public/
+Allow: /assets/
+Disallow: /admin/
+
+# Block bad bots
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10

@@ -91,15 +91,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $attachment_path
     ]);
 
-    // user ko batana ki admin approval ke baad show hoga
-    $success_msg = "Note submitted! It will be visible after admin approval.";
-    // form reset
+    // Display success message
+    $success_msg = "✅ Excellent! Your material has been submitted successfully and is pending admin approval. You'll be notified once it's published. Thank you for contributing to our community!";
+    // Reset form
     $title = $category = $tags = $content = "";
   }
 }
 ?>
 
-<h2>Add New Note</h2>
+<h2>📝 Upload Study Material</h2>
+
+<div class="alert-info" style="margin-bottom: 1.5rem;">
+  <strong>🎯 Guidelines for Quality Contributions:</strong>
+  <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+    <li>Provide clear, descriptive titles</li>
+    <li>Categorize accurately for easy discovery</li>
+    <li>Use relevant tags (comma-separated)</li>
+    <li>Upload PDF files for supplementary content (optional)</li>
+    <li>Your material will be reviewed before publication</li>
+  </ul>
+</div>
 
 <?php if (!empty($errors)): ?>
   <div style="color:red;">
@@ -117,30 +128,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <form method="post" enctype="multipart/form-data">
   <label>
-    Title:<br>
-    <input type="text" name="title" value="<?php echo htmlspecialchars($title); ?>" style="width:100%;">
+    📝 Title of Study Material:<br>
+    <input type="text" name="title" value="<?php echo htmlspecialchars($title); ?>" placeholder="e.g., Complete Mathematics Notes for CDS Exam" style="width:100%;">
   </label><br><br>
 
   <label>
-    Category (e.g. CDS, AFCAT, MCA, Programming):<br>
-    <input type="text" name="category" value="<?php echo htmlspecialchars($category); ?>" style="width:100%;">
+    📂 Category (Exam/Subject):<br>
+    <input type="text" name="category" value="<?php echo htmlspecialchars($category); ?>" placeholder="e.g., CDS, AFCAT, NDA, Programming, MCA" style="width:100%;">
   </label><br><br>
 
   <label>
-    Tags (comma separated):<br>
-    <input type="text" name="tags" value="<?php echo htmlspecialchars($tags); ?>" style="width:100%;">
+    🏷️ Tags (comma-separated for better discoverability):<br>
+    <input type="text" name="tags" value="<?php echo htmlspecialchars($tags); ?>" placeholder="e.g., mathematics, algebra, geometry, defense exams" style="width:100%;">
   </label><br><br>
+
   <label>
-    Upload PDF (optional): <br>
+    📄 Upload PDF Document (Optional):<br>
     <input type="file" name="note_file" accept="application/pdf">
+    <small style="color: #6b7280; display: block; margin-top: 0.25rem;">Only PDF files accepted. Max size: 10MB recommended</small>
   </label>
   <br><br>
+
   <label>
-    Content (your notes):<br>
-    <textarea name="content" rows="10" style="width:100%;"><?php echo htmlspecialchars($content); ?></textarea>
+    ✍️ Content (Your detailed notes):<br>
+    <textarea name="content" rows="12" placeholder="Share your comprehensive notes, key concepts, formulas, tips, and strategies..." style="width:100%;"><?php echo htmlspecialchars($content); ?></textarea>
   </label><br><br>
 
-  <button type="submit">Submit Note</button>
+  <button type="submit">🚀 Submit for Review</button>
+  <a href="dashboard.php" style="margin-left: 1rem;">
+    <button type="button" class="btn-secondary">Cancel</button>
+  </a>
 </form>
 
 <?php require_once "../includes/footer.php"; ?>

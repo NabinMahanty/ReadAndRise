@@ -1,7 +1,57 @@
-/assets/uploads/
+# Dependencies
 /vendor/
 /node_modules/
+
+# Environment & Configuration
 .env
+.env.local
+.env.production
+config.local.php
+
+# Uploads & User Content
+/uploads/
+/uploads/notes/
+/uploads/blogs/
+/assets/uploads/
+
+# Logs & Cache
 *.log
+/logs/
+*.cache
+/cache/
+error_log
+php_errors.log
+
+# OS & Editor Files
 .DS_Store
-/uploads
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+
+# Temporary Files
+/tmp/
+/temp/
+*.tmp
+
+# Database
+*.sql
+*.sqlite
+*.db
+/backup/
+
+# Composer
+composer.phar
+composer.lock
+
+# Build & Distribution
+/dist/
+/build/
