@@ -67,5 +67,22 @@ $notes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <?php
 // YAHAN BE AD CODE LA SAKTE HO (bottom ad)
 ?>
+<style>
+  iframe {
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  // Disable right click
+  document.addEventListener('contextmenu', event => event.preventDefault());
+
+  // Disable keyboard shortcuts (Ctrl+S, Ctrl+P)
+  document.onkeydown = function(e) {
+    if (e.ctrlKey && (e.key === 's' || e.key === 'p')) {
+      e.preventDefault();
+    }
+  };
+</script>
 
 <?php require_once "../includes/footer.php"; ?>

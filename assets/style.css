@@ -211,3 +211,124 @@ footer {
     color: #6b7280;
     margin-top: 30px;
 }
+/* ---------- Homepage Hero ---------- */
+.hero {
+    background: radial-gradient(circle at top left, #fbbf24 0, transparent 50%),
+                radial-gradient(circle at top right, #60a5fa 0, transparent 55%),
+                #0f172a;
+    color: #f9fafb;
+    border-radius: 14px;
+    padding: 22px 22px 26px 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.6);
+}
+
+.hero-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.hero-subtitle {
+    font-size: 15px;
+    color: #e5e7eb;
+    margin-bottom: 14px;
+}
+
+.hero-tagline {
+    font-size: 14px;
+    font-weight: 500;
+    color: #facc15;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #e5e7eb;
+    border: 1px solid #9ca3af;
+    box-shadow: none;
+}
+
+.btn-secondary:hover {
+    background: #111827;
+    color: #f9fafb;
+}
+
+/* ---------- Homepage Layout ---------- */
+.home-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr);
+    gap: 18px;
+    margin-top: 10px;
+}
+
+@media (max-width: 800px) {
+    .home-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---------- Sidebar / Quick Card ---------- */
+.quick-card {
+    background: #111827;
+    color: #e5e7eb;
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.5);
+}
+
+.quick-card h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: #fbbf24;
+}
+
+.quick-card ul {
+    list-style: none;
+    margin-top: 8px;
+}
+
+.quick-card li {
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.quick-card a {
+    color: #bfdbfe;
+    text-decoration: none;
+}
+
+.quick-card a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Section Headings ---------- */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.section-header h2 {
+    margin-bottom: 0;
+}
+
+.section-header a {
+    font-size: 13px;
+    text-decoration: none;
+    color: #2563eb;
+}
+
+.section-header a:hover {
+    text-decoration: underline;
+}

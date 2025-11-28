@@ -6,7 +6,22 @@ if (session_status() === PHP_SESSION_NONE) {
 function require_login()
 {
   if (empty($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: /readandrise/public/login.php");
+    exit;
+  }
+}
+
+function is_admin()
+{
+  return !empty($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+}
+
+function require_admin()
+{
+  require_login();
+  if (!is_admin()) {
+    http_response_code(403);
+    echo "Access denied. Admins only.";
     exit;
   }
 }

@@ -35,6 +35,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors[] = "Content cannot be empty.";
   }
 
+  $attachment_path = null;
+
+  if (!empty($_FILES['note_file']['name'])) {
+    $file = $_FILES['note_file'];
+
+    // validation
+    if ($file['error'] === 0) {
+      $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+      if ($ext !== 'pdf') {
+        $errors[] = "Only PDF files are allowed.";
+      } else {
+        // unique filename
+        $newName = 'note_' . time() . '_' . rand(1000, 9999) . '.pdf';
+        $uploadPath = "../uploads/notes/" . $newName;
+
+        if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+          $attachment_path = $newName;
+        } else {
+          $errors[] = "Failed to upload PDF.";
+        }
+      }
+    }
+  }
+
   if (empty($errors)) {
     $slug = make_slug($title);
 
@@ -53,16 +78,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $stmt = $pdo->prepare("
-            INSERT INTO notes (user_id, title, slug, category, tags, content)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ");
+    INSERT INTO notes (user_id, title, slug, category, tags, content, attachment_path)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+");
     $stmt->execute([
       $_SESSION['user_id'],
       $title,
       $slug,
       $category,
       $tags,
-      $content
+      $content,
+      $attachment_path
     ]);
 
     // user ko batana ki admin approval ke baad show hoga
@@ -89,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <p style="color:green;"><?php echo htmlspecialchars($success_msg); ?></p>
 <?php endif; ?>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
   <label>
     Title:<br>
     <input type="text" name="title" value="<?php echo htmlspecialchars($title); ?>" style="width:100%;">
@@ -104,7 +130,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     Tags (comma separated):<br>
     <input type="text" name="tags" value="<?php echo htmlspecialchars($tags); ?>" style="width:100%;">
   </label><br><br>
-
+  <label>
+    Upload PDF (optional): <br>
+    <input type="file" name="note_file" accept="application/pdf">
+  </label>
+  <br><br>
   <label>
     Content (your notes):<br>
     <textarea name="content" rows="10" style="width:100%;"><?php echo htmlspecialchars($content); ?></textarea>

@@ -20,7 +20,13 @@ if (session_status() === PHP_SESSION_NONE) {
       <a href="/readandrise/public/index.php">Home</a>
       <a href="/readandrise/public/notes.php">Notes</a>
       <a href="/readandrise/public/blogs.php">Struggle Stories</a>
+
       <?php if (!empty($_SESSION['user_id'])): ?>
+
+        <?php if (!empty($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+          <a href="/readandrise/admin/index.php">Admin Panel</a>
+        <?php endif; ?>
+
         <a href="/readandrise/public/dashboard.php">Dashboard</a>
         <a href="/readandrise/public/logout.php">Logout</a>
       <?php else: ?>
