@@ -1,19 +1,16 @@
 <?php
+require_once "../includes/auth.php";
 require_once "../includes/header.php";
 
-if (empty($_SESSION['user_id'])) {
-  header("Location: login.php");
-  exit;
-}
+require_login();
 ?>
 
 <h2>Welcome, <?php echo htmlspecialchars($_SESSION['user_name']); ?></h2>
 
-<p>Yahan se aage tum:
+<p>Yahan se aap:</p>
 <ul>
-  <li>Apne notes upload karoge</li>
-  <li>Apne struggle stories likhoge</li>
+  <li><a href="add_note.php">Apne notes upload kar sakte hain</a></li>
+  <li><a href="add_blog.php">Apni struggle / journey story share kar sakte hain (coming soon)</a></li>
 </ul>
-</p>
 
 <?php require_once "../includes/footer.php"; ?>

@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php endif; ?>
 
 <?php if (!empty($errors)): ?>
-  <div style="color:red;">
+  <div class="alert-error" style="color:red;">
     <ul>
       <?php foreach ($errors as $e): ?>
         <li><?php echo htmlspecialchars($e); ?></li>
