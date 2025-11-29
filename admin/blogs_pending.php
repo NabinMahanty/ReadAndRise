@@ -24,7 +24,7 @@ if (isset($_GET['action'], $_GET['id'])) {
 require_once "../includes/header.php";
 
 $stmt = $pdo->query("
-    SELECT b.id, b.title, b.category, b.created_at, u.name AS author
+    SELECT b.id, b.title, b.slug, b.category, b.created_at, u.name AS author
     FROM blogs b
     JOIN users u ON b.user_id = u.id
     WHERE b.status = 'pending'
@@ -54,6 +54,10 @@ $pendingBlogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             | By: <?php echo htmlspecialchars($blog['author']); ?>
             | On: <?php echo htmlspecialchars($blog['created_at']); ?>
           </small>
+          <br><br>
+          <a href="../public/blog.php?slug=<?php echo urlencode($blog['slug']); ?>&preview=1" target="_blank" style="font-size:13px; color:#2563eb;">
+            👁️ Preview Story (opens in new tab)
+          </a>
           <br><br>
           <a href="blogs_pending.php?action=approve&id=<?php echo (int)$blog['id']; ?>">
             <button type="button">Approve</button>

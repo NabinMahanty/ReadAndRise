@@ -1,6 +1,7 @@
 <?php
+// public/register.php
 require_once "../includes/db.php";
-require_once "../includes/header.php";
+session_start();
 
 $errors = [];
 $name = "";
@@ -26,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   if (empty($errors)) {
-    // check email exists or not
     $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->execute([$email]);
     if ($stmt->fetch()) {
@@ -36,18 +36,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
       $stmt->execute([$name, $email, $hash]);
 
-      // redirect to login
       header("Location: login.php?registered=1");
       exit;
     }
   }
 }
+
+require_once "../includes/header.php";
 ?>
 
 <h2>Create your account</h2>
 
 <?php if (!empty($errors)): ?>
-  <div style="color:red;">
+  <div class="alert-error">
     <ul>
       <?php foreach ($errors as $e): ?>
         <li><?php echo htmlspecialchars($e); ?></li>

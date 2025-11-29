@@ -43,9 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validation
     if ($file['error'] === 0) {
       $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+      $fileSize = $file['size'];
+      $maxSize = 10 * 1024 * 1024; // 10MB in bytes
 
       if ($ext !== 'pdf') {
         $errors[] = "Only PDF files are allowed.";
+      } elseif ($fileSize > $maxSize) {
+        $errors[] = "PDF file size must not exceed 10MB. Your file is " . round($fileSize / 1024 / 1024, 2) . "MB.";
       } else {
         // unique filename
         $newName = 'note_' . time() . '_' . rand(1000, 9999) . '.pdf';

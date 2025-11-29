@@ -46,6 +46,19 @@
   </footer>
 
   <script>
+    // hide loader when page fully loaded
+    window.addEventListener('load', function() {
+      const loader = document.getElementById('page-loader');
+      if (loader) {
+        // Add hidden class to fade out loader
+        loader.classList.add('hidden');
+        // Show body content
+        document.body.classList.add('loaded');
+        // Remove loader from DOM after transition
+        setTimeout(() => loader.remove(), 600);
+      }
+    });
+
     // Mobile menu toggle
     document.querySelector('.mobile-menu-toggle')?.addEventListener('click', function() {
       document.querySelector('.main-nav')?.classList.toggle('active');
@@ -64,11 +77,6 @@
           });
         }
       });
-    });
-
-    // Add loading animation
-    window.addEventListener('load', function() {
-      document.body.classList.add('loaded');
     });
   </script>
   </body>

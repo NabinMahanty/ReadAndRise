@@ -1179,3 +1179,235 @@ button:active {
     background: var(--primary-gold);
     color: var(--gray-900);
 }
+
+/* ---------- Defense-Themed Loading Animation ---------- */
+.defense-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1f4d 50%, #0066ff 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+}
+
+.defense-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader-content {
+    text-align: center;
+    position: relative;
+}
+
+/* Indian Flag Animation */
+.flag-container {
+    width: 200px;
+    height: 133px;
+    margin: 0 auto 2rem;
+    position: relative;
+    animation: flagWave 3s ease-in-out infinite;
+}
+
+.flag-stripe {
+    width: 100%;
+    height: 33.33%;
+}
+
+.flag-saffron {
+    background: #FF9933;
+    border-radius: 8px 8px 0 0;
+}
+
+.flag-white {
+    background: white;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flag-green {
+    background: #138808;
+    border-radius: 0 0 8px 8px;
+}
+
+.ashoka-chakra {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #000080;
+    border-radius: 50%;
+    position: relative;
+    animation: chakraRotate 4s linear infinite;
+}
+
+.chakra-spoke {
+    position: absolute;
+    width: 2px;
+    height: 40px;
+    background: #000080;
+    top: 50%;
+    left: 50%;
+    transform-origin: center;
+}
+
+.chakra-spoke:nth-child(1) { transform: translate(-50%, -50%) rotate(0deg); }
+.chakra-spoke:nth-child(2) { transform: translate(-50%, -50%) rotate(15deg); }
+.chakra-spoke:nth-child(3) { transform: translate(-50%, -50%) rotate(30deg); }
+.chakra-spoke:nth-child(4) { transform: translate(-50%, -50%) rotate(45deg); }
+.chakra-spoke:nth-child(5) { transform: translate(-50%, -50%) rotate(60deg); }
+.chakra-spoke:nth-child(6) { transform: translate(-50%, -50%) rotate(75deg); }
+.chakra-spoke:nth-child(7) { transform: translate(-50%, -50%) rotate(90deg); }
+.chakra-spoke:nth-child(8) { transform: translate(-50%, -50%) rotate(105deg); }
+.chakra-spoke:nth-child(9) { transform: translate(-50%, -50%) rotate(120deg); }
+.chakra-spoke:nth-child(10) { transform: translate(-50%, -50%) rotate(135deg); }
+.chakra-spoke:nth-child(11) { transform: translate(-50%, -50%) rotate(150deg); }
+.chakra-spoke:nth-child(12) { transform: translate(-50%, -50%) rotate(165deg); }
+
+@keyframes chakraRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes flagWave {
+    0%, 100% { transform: perspective(500px) rotateY(0deg); }
+    50% { transform: perspective(500px) rotateY(10deg); }
+}
+
+/* Military Stars */
+.stars-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.military-star {
+    position: absolute;
+    color: #ffd700;
+    font-size: 20px;
+    animation: starFloat 3s ease-in-out infinite;
+    opacity: 0.8;
+}
+
+.military-star:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+.military-star:nth-child(2) { top: 20%; right: 15%; animation-delay: 0.5s; }
+.military-star:nth-child(3) { bottom: 15%; left: 20%; animation-delay: 1s; }
+.military-star:nth-child(4) { bottom: 25%; right: 10%; animation-delay: 1.5s; }
+.military-star:nth-child(5) { top: 50%; left: 5%; animation-delay: 2s; }
+.military-star:nth-child(6) { top: 50%; right: 5%; animation-delay: 2.5s; }
+
+@keyframes starFloat {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+    50% { transform: translateY(-20px) scale(1.2); opacity: 1; }
+}
+
+/* Loading Text */
+.loader-text {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: textPulse 2s ease-in-out infinite;
+}
+
+.loader-subtext {
+    color: #ffd700;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    animation: subtextFade 2s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes subtextFade {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+/* Progress Bar */
+.progress-container {
+    width: 300px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 2rem;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #FF9933 0%, white 50%, #138808 100%);
+    border-radius: 10px;
+    animation: progressMove 2s ease-in-out infinite;
+}
+
+@keyframes progressMove {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
+/* Medals/Badges */
+.badge-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.defense-badge {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #ffd700 0%, #ff9933 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    animation: badgeBounce 1.5s ease-in-out infinite;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+.defense-badge:nth-child(1) { animation-delay: 0s; }
+.defense-badge:nth-child(2) { animation-delay: 0.3s; }
+.defense-badge:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes badgeBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .flag-container {
+        width: 150px;
+        height: 100px;
+    }
+    
+    .loader-text {
+        font-size: 1.2rem;
+    }
+    
+    .loader-subtext {
+        font-size: 0.9rem;
+    }
+    
+    .progress-container {
+        width: 250px;
+    }
+}

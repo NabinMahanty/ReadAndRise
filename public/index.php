@@ -139,13 +139,16 @@ $stats = $statsStmt->fetch(PDO::FETCH_ASSOC);
         <?php if (!empty($_SESSION['user_id'])): ?>
           <li><a href="add_note.php"><strong>Upload Study Material</strong> - Share your expertise</a></li>
           <li><a href="add_blog.php"><strong>Share Your Journey</strong> - Inspire others</a></li>
+          <li><a href="add_current.php"><strong>Submit Current Affairs</strong> - Keep community updated</a></li>
+          <li><a href="add_question.php"><strong>Add Question Papers</strong> - Share resources</a></li>
           <li><a href="dashboard.php"><strong>Command Center</strong> - Manage your contributions</a></li>
-          <li><a href="notes.php"><strong>Browse Resources</strong> - Expand your knowledge</a></li>
         <?php else: ?>
           <li><a href="register.php"><strong>Create Free Account</strong> - Join in 2 minutes</a></li>
           <li><a href="login.php"><strong>Member Login</strong> - Access your dashboard</a></li>
           <li><a href="notes.php"><strong>Browse Materials</strong> - No login required</a></li>
           <li><a href="blogs.php"><strong>Read Success Stories</strong> - Get inspired</a></li>
+          <li><a href="current_affairs.php"><strong>Current Affairs</strong> - Stay updated</a></li>
+          <li><a href="questions.php"><strong>Question Papers</strong> - Practice resources</a></li>
         <?php endif; ?>
       </ul>
     </div>

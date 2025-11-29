@@ -25,6 +25,26 @@ $stmtBlogs = $pdo->prepare("
 $stmtBlogs->execute([$_SESSION['user_id']]);
 $myBlogs = $stmtBlogs->fetchAll(PDO::FETCH_ASSOC);
 
+// fetch user current affairs
+$stmtCurrent = $pdo->prepare("
+    SELECT id, title, status, created_at
+    FROM current_affairs
+    WHERE user_id = ?
+    ORDER BY created_at DESC
+");
+$stmtCurrent->execute([$_SESSION['user_id']]);
+$myCurrentAffairs = $stmtCurrent->fetchAll(PDO::FETCH_ASSOC);
+
+// fetch user questions
+$stmtQuestions = $pdo->prepare("
+    SELECT id, title, year, subject, status, created_at
+    FROM questions
+    WHERE user_id = ?
+    ORDER BY created_at DESC
+");
+$stmtQuestions->execute([$_SESSION['user_id']]);
+$myQuestions = $stmtQuestions->fetchAll(PDO::FETCH_ASSOC);
+
 function status_badge_class($status)
 {
   switch ($status) {
@@ -47,11 +67,40 @@ function status_badge_class($status)
 
   <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
     <a href="add_note.php" style="text-decoration: none;">
-      <button type="button">📝 Upload New Study Material</button>
+      <button type="button">📝 Upload Study Material</button>
     </a>
     <a href="add_blog.php" style="text-decoration: none;">
-      <button type="button" class="btn-secondary">✨ Share Your Success Story</button>
+      <button type="button" class="btn-secondary">✨ Share Success Story</button>
     </a>
+    <a href="add_current.php" style="text-decoration: none;">
+      <button type="button" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">📰 Add Current Affairs</button>
+    </a>
+    <a href="add_question.php" style="text-decoration: none;">
+      <button type="button" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">📝 Submit Question Papers</button>
+    </a>
+  </div>
+</div>
+
+<!-- Statistics Overview -->
+<div class="card" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; margin-top: 2rem;">
+  <h2 style="color: #fbbf24; margin-bottom: 1rem;">📊 Your Contribution Statistics</h2>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+    <div style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
+      <div style="font-size: 2rem; font-weight: 800; color: #60a5fa;"><?php echo count($myNotes); ?></div>
+      <div style="font-size: 0.875rem; color: #cbd5e1; margin-top: 0.25rem;">Study Materials</div>
+    </div>
+    <div style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
+      <div style="font-size: 2rem; font-weight: 800; color: #34d399;"><?php echo count($myBlogs); ?></div>
+      <div style="font-size: 0.875rem; color: #cbd5e1; margin-top: 0.25rem;">Success Stories</div>
+    </div>
+    <div style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
+      <div style="font-size: 2rem; font-weight: 800; color: #fbbf24;"><?php echo count($myCurrentAffairs); ?></div>
+      <div style="font-size: 0.875rem; color: #cbd5e1; margin-top: 0.25rem;">Current Affairs</div>
+    </div>
+    <div style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
+      <div style="font-size: 2rem; font-weight: 800; color: #a78bfa;"><?php echo count($myQuestions); ?></div>
+      <div style="font-size: 0.875rem; color: #cbd5e1; margin-top: 0.25rem;">Question Papers</div>
+    </div>
   </div>
 </div>
 
@@ -86,11 +135,18 @@ function status_badge_class($status)
               <span class="<?php echo status_badge_class($note['status']); ?>">
                 <?php echo ucfirst(htmlspecialchars($note['status'])); ?>
               </span>
-              <?php if ($note['status'] === 'rejected'): ?>
-                <small style="color:#b91c1c; font-size:0.875rem; margin-left:6px; display: block; margin-top: 0.25rem;">
-                  ⚠️ Review feedback and resubmit (editing feature launching soon)
-                </small>
-              <?php endif; ?>
+              <div style="margin-top: 0.5rem;">
+                <a href="edit_note.php?id=<?php echo $note['id']; ?>" style="text-decoration: none;">
+                  <button type="button" style="font-size: 0.875rem; padding: 0.4rem 0.8rem; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                    ✏️ Edit
+                  </button>
+                </a>
+                <a href="delete_note.php?id=<?php echo $note['id']; ?>" style="text-decoration: none;">
+                  <button type="button" style="font-size: 0.875rem; padding: 0.4rem 0.8rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                    🗑️ Delete
+                  </button>
+                </a>
+              </div>
             </li>
           <?php endforeach; ?>
         </ul>
@@ -127,6 +183,94 @@ function status_badge_class($status)
               <br>
               <span class="<?php echo status_badge_class($blog['status']); ?>">
                 <?php echo ucfirst(htmlspecialchars($blog['status'])); ?>
+              </span>
+              <div style="margin-top: 0.5rem;">
+                <a href="edit_blog.php?id=<?php echo $blog['id']; ?>" style="text-decoration: none;">
+                  <button type="button" style="font-size: 0.875rem; padding: 0.4rem 0.8rem; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                    ✏️ Edit
+                  </button>
+                </a>
+                <a href="delete_blog.php?id=<?php echo $blog['id']; ?>" style="text-decoration: none;">
+                  <button type="button" style="font-size: 0.875rem; padding: 0.4rem 0.8rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                    🗑️ Delete
+                  </button>
+                </a>
+              </div>
+            </li>
+          <?php endforeach; ?>
+        </ul>
+      </div>
+    <?php endif; ?>
+  </aside>
+</div>
+
+<!-- Current Affairs Section -->
+<div class="home-grid" style="margin-top: 2rem;">
+  <section>
+    <div class="section-header">
+      <h2>📰 My Current Affairs</h2>
+      <a href="add_current.php">+ Add New</a>
+    </div>
+
+    <?php if (empty($myCurrentAffairs)): ?>
+      <div class="card">
+        <h3 style="margin-bottom: 0.5rem;">📰 Share Current Events</h3>
+        <p style="font-size:1rem;">Keep the community updated with important news and events relevant to exam preparation.</p>
+        <a href="add_current.php">
+          <button type="button" style="margin-top: 1rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">Add Current Affairs</button>
+        </a>
+      </div>
+    <?php else: ?>
+      <div class="notes-list">
+        <ul>
+          <?php foreach ($myCurrentAffairs as $current): ?>
+            <li>
+              <strong><?php echo htmlspecialchars($current['title']); ?></strong>
+              <br>
+              <small>
+                On: <?php echo htmlspecialchars($current['created_at']); ?>
+              </small>
+              <br>
+              <span class="<?php echo status_badge_class($current['status']); ?>">
+                <?php echo ucfirst(htmlspecialchars($current['status'])); ?>
+              </span>
+            </li>
+          <?php endforeach; ?>
+        </ul>
+      </div>
+    <?php endif; ?>
+  </section>
+
+  <!-- Question Papers Section -->
+  <aside>
+    <div class="section-header">
+      <h2>📝 My Question Papers</h2>
+      <a href="add_question.php">+ Submit New</a>
+    </div>
+
+    <?php if (empty($myQuestions)): ?>
+      <div class="card">
+        <h4 style="margin-bottom: 0.5rem;">📝 Share Resources</h4>
+        <p style="font-size:0.95rem;">Submit Google Drive folders containing previous year question papers to help others practice.</p>
+        <a href="add_question.php">
+          <button type="button" class="btn-secondary" style="margin-top: 1rem; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;">Submit Papers</button>
+        </a>
+      </div>
+    <?php else: ?>
+      <div class="blogs-list">
+        <ul>
+          <?php foreach ($myQuestions as $question): ?>
+            <li>
+              <strong><?php echo htmlspecialchars($question['title']); ?></strong>
+              <br>
+              <small>
+                <?php if ($question['subject']): ?>Subject: <?php echo htmlspecialchars($question['subject']); ?> | <?php endif; ?>
+              Year: <?php echo htmlspecialchars($question['year']); ?>
+              | On: <?php echo htmlspecialchars($question['created_at']); ?>
+              </small>
+              <br>
+              <span class="<?php echo status_badge_class($question['status']); ?>">
+                <?php echo ucfirst(htmlspecialchars($question['status'])); ?>
               </span>
             </li>
           <?php endforeach; ?>

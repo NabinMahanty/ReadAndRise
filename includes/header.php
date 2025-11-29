@@ -71,9 +71,72 @@ $page_url = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lottie Web Component CDN - Load in HEAD for faster init -->
+  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.5/dist/dotlottie-wc.js" type="module"></script>
+
+  <!-- ================= LOADING SCREEN: DOTLOTTIE VERSION =================== -->
+  <style>
+    /* Hide body content until loaded */
+    body {
+      opacity: 0;
+      transition: opacity 0.3s ease-in;
+    }
+
+    body.loaded {
+      opacity: 1;
+    }
+
+    #page-loader {
+      position: fixed;
+      inset: 0;
+      background: #071022;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      opacity: 1;
+      transition: opacity 0.5s ease-out;
+    }
+
+    #page-loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #loader-title {
+      margin-top: 10px;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    #loader-sub {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+  </style>
 </head>
 
 <body>
+  <div id="page-loader">
+    <!-- YOUR Animation -->
+    <dotlottie-wc
+      src="https://lottie.host/311da995-fc37-4dba-bc98-28aeeada1b66/yuHTX46CPz.lottie"
+      style="width: 220px; height: 220px"
+      autoplay
+      loop>
+    </dotlottie-wc>
+
+    <div id="loader-title">ReadAndRise</div>
+    <div id="loader-sub">Preparing your mission…</div>
+  </div>
+
   <header class="main-header">
     <div class="header-container">
       <div class="logo-section">
@@ -98,6 +161,14 @@ $page_url = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         <a href="/readandrise/public/blogs.php" class="nav-link">
           <span class="nav-icon">✨</span>
           <span>Success Stories</span>
+        </a>
+        <a href="/readandrise/public/current_affairs.php" class="nav-link">
+          <span class="nav-icon">📰</span>
+          <span>Current Affairs</span>
+        </a>
+        <a href="/readandrise/public/questions.php" class="nav-link">
+          <span class="nav-icon">📝</span>
+          <span>Question Papers</span>
         </a>
 
         <?php if (!empty($_SESSION['user_id'])): ?>

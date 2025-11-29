@@ -26,7 +26,7 @@ require_once "../includes/header.php";
 
 // fetch all pending notes
 $stmt = $pdo->query("
-    SELECT n.id, n.title, n.category, n.tags, n.created_at, u.name AS author
+    SELECT n.id, n.title, n.slug, n.category, n.tags, n.created_at, u.name AS author
     FROM notes n
     JOIN users u ON n.user_id = u.id
     WHERE n.status = 'pending'
@@ -64,8 +64,8 @@ $pendingNotes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             | On: <?php echo htmlspecialchars($note['created_at']); ?>
           </small>
           <br><br>
-          <a href="../public/note.php?slug=<?php echo urlencode('preview-not-implemented'); ?>" style="font-size:13px; color:#2563eb;">
-            (Preview as user - optional later)
+          <a href="../public/note.php?slug=<?php echo urlencode($note['slug']); ?>&preview=1" target="_blank" style="font-size:13px; color:#2563eb;">
+            👁️ Preview Note (opens in new tab)
           </a>
           <br><br>
           <a href="notes_pending.php?action=approve&id=<?php echo (int)$note['id']; ?>">
