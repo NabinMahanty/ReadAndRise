@@ -22,29 +22,94 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute($params);
 $currentItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$totalResults = count($currentItems);
 ?>
 
-<div class="card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b;">
-  <h2 style="color: #92400e;">📰 Current Affairs</h2>
-  <p style="color: #78350f; margin-bottom: 1.5rem;">
-    Stay updated with the latest news, events, and developments relevant to your exam preparation.
-  </p>
+<style>
+  @media (max-width: 768px) {
+    .search-filter-card {
+      padding: 1.5rem !important;
+    }
 
-  <form method="GET" style="margin-top: 1rem;">
-    <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+    .header-section {
+      padding: 1.5rem 1rem !important;
+    }
+
+    .header-section h1 {
+      font-size: 1.75rem !important;
+    }
+
+    .current-card {
+      flex-direction: column !important;
+    }
+
+    .current-card img {
+      width: 100% !important;
+      height: auto !important;
+      max-height: 200px !important;
+    }
+
+    .current-meta {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 0.5rem !important;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .search-filter-card {
+      padding: 2rem 3rem !important;
+    }
+
+    .current-card img {
+      width: 150px !important;
+      height: 120px !important;
+    }
+  }
+</style>
+
+<!-- Header Section -->
+<div class="header-section" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); padding: 3rem 2rem; border-radius: 16px; margin-bottom: 2rem; text-align: center; border: 1px solid rgba(148, 163, 184, 0.2);">
+  <h1 style="color: #f1f5f9; font-size: 2.5rem; margin-bottom: 1rem; font-weight: 700;">
+    📰 Current Affairs Repository
+  </h1>
+  <p style="color: #cbd5e1; font-size: 1.1rem;">
+    <?php if ($search): ?>
+      Showing <strong style="color: #60a5fa;"><?php echo $totalResults; ?></strong> result<?php echo $totalResults != 1 ? 's' : ''; ?>
+    <?php else: ?>
+      Stay updated with the latest news, events, and developments relevant to your exam preparation
+    <?php endif; ?>
+  </p>
+</div>
+
+<!-- Search & Filter Card -->
+<div class="card search-filter-card" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border: 1px solid rgba(148, 163, 184, 0.2); margin-bottom: 2rem; padding: 3rem 5rem;">
+  <h3 style="color: #60a5fa; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.5rem;">
+    🔍 Search & Filter
+  </h3>
+
+  <form method="GET" style="background: transparent; box-shadow: none; padding: 0; border: none;">
+    <div style="margin-bottom: 2rem;">
+      <label style="color: #60a5fa; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; font-size: 1rem;">
+        🔎 Search Keywords
+      </label>
       <input
         type="text"
         name="search"
-        placeholder="🔍 Search current affairs..."
+        placeholder="Search by title, summary, or content..."
         value="<?php echo htmlspecialchars($search); ?>"
-        style="flex: 1; min-width: 250px; padding: 0.75rem; border: 2px solid #fbbf24; border-radius: 8px;">
-      <button type="submit" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); font-weight: 600;">
-        🔍 Search
+        style="width: 100%; padding: 1rem; border: none; border-radius: 10px; font-size: 1rem; background: rgba(15, 23, 42, 0.8); color: #f1f5f9;">
+      <small style="color: #94a3b8; margin-top: 0.5rem; display: block; font-size: 0.875rem;">Search across titles, summaries, and content</small>
+    </div>
+
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; justify-content: center;">
+      <button type="submit" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 1rem 2.5rem; font-size: 1rem; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+        🔎 Search
       </button>
       <?php if ($search): ?>
-        <a href="current_affairs.php" style="text-decoration: none;">
-          <button type="button" class="btn-secondary" style="background: #fff !important; color: #92400e !important; border: 2px solid #f59e0b !important; font-weight: 600 !important;">
-            ❌ Clear Filter
+        <a href="current_affairs.php">
+          <button type="button" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 1rem 2rem; font-size: 1rem; border-radius: 10px; cursor: pointer; font-weight: 600;">
+            ✖ Clear Filters
           </button>
         </a>
       <?php endif; ?>
@@ -52,55 +117,102 @@ $currentItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </form>
 </div>
 
+<!-- Results Section -->
 <?php if (empty($currentItems)): ?>
-  <div class="card" style="text-align: center; padding: 3rem;">
-    <p style="font-size: 3rem; margin-bottom: 1rem;">📰</p>
-    <h3 style="color: #374151; margin-bottom: 0.5rem;">No Current Affairs Found</h3>
-    <p style="color: #6b7280;">
-      <?php echo $search ? 'No current affairs match your search. Try different keywords.' : 'Current affairs will be published here soon.'; ?>
+  <div class="card" style="text-align: center; padding: 4rem 2rem; background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border: 1px solid rgba(148, 163, 184, 0.2);">
+    <div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.5;">📰</div>
+    <h3 style="color: #f1f5f9; margin-bottom: 1rem; font-size: 1.5rem;">No Current Affairs Found</h3>
+    <p style="font-size: 1.1rem; color: #cbd5e1; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+      <?php echo $search ? 'We couldn\'t find any current affairs matching your search criteria. Try adjusting your search terms.' : 'Current affairs articles will be published here soon.'; ?>
     </p>
+
+    <div style="background: rgba(15, 23, 42, 0.5); padding: 1.5rem; border-radius: 12px; margin-top: 2rem; max-width: 500px; margin-left: auto; margin-right: auto; border: 1px solid rgba(148, 163, 184, 0.2);">
+      <h4 style="color: #60a5fa; margin-bottom: 1rem; font-size: 1.1rem;">💡 Suggestions:</h4>
+      <ul style="text-align: left; list-style: none; padding: 0; color: #cbd5e1;">
+        <li style="margin-bottom: 0.5rem;">✓ Try different keywords</li>
+        <li style="margin-bottom: 0.5rem;">✓ Check for spelling errors</li>
+        <li style="margin-bottom: 0.5rem;">✓ Use broader search terms</li>
+        <li style="margin-bottom: 0.5rem;">✓ Clear filters and browse all articles</li>
+      </ul>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      <a href="current_affairs.php">
+        <button type="button" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 1rem 2rem; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600;">
+          📰 View All Current Affairs
+        </button>
+      </a>
+    </div>
   </div>
 <?php else: ?>
-  <div class="notes-list">
+  <!-- Results Count -->
+  <div style="margin-bottom: 1.5rem; padding: 1rem 1.5rem; background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.3);">
+    <p style="margin: 0; color: #d1fae5; font-weight: 600;">
+      ✅ Found <strong style="color: #6ee7b7;"><?php echo $totalResults; ?></strong>
+      current affairs article<?php echo $totalResults != 1 ? 's' : ''; ?>
+      <?php if ($search): ?>
+        matching "<strong style="color: #6ee7b7;"><?php echo htmlspecialchars($search); ?></strong>"
+      <?php endif; ?>
+    </p>
+  </div>
+
+  <!-- Current Affairs List -->
+  <div style="display: grid; gap: 1rem;">
     <?php foreach ($currentItems as $item): ?>
-      <div class="card" style="display: flex; gap: 1.5rem; align-items: flex-start;">
-        <?php if (!empty($item['image_path'])): ?>
-          <img
-            src="../uploads/current/<?php echo htmlspecialchars($item['image_path']); ?>"
-            alt="<?php echo htmlspecialchars($item['title']); ?>"
-            style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-        <?php endif; ?>
-
-        <div style="flex: 1;">
-          <h3 style="margin-bottom: 0.75rem;">
-            <a href="current.php?id=<?php echo $item['id']; ?>" style="color: #1e40af; text-decoration: none;">
-              <?php echo htmlspecialchars($item['title']); ?>
-            </a>
-          </h3>
-
-          <?php if (!empty($item['summary'])): ?>
-            <p style="color: #4b5563; margin-bottom: 0.75rem; line-height: 1.6;">
-              <?php echo htmlspecialchars($item['summary']); ?>
-            </p>
-          <?php else: ?>
-            <p style="color: #4b5563; margin-bottom: 0.75rem; line-height: 1.6;">
-              <?php echo htmlspecialchars(mb_substr(strip_tags($item['content']), 0, 200)) . '...'; ?>
-            </p>
+      <a href="current.php?id=<?php echo $item['id']; ?>" style="text-decoration: none;">
+        <div class="card current-card" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border: 1px solid rgba(148, 163, 184, 0.2); padding: 1.5rem; transition: all 0.3s ease; display: flex; gap: 1.5rem; align-items: flex-start;">
+          <?php if (!empty($item['image_path'])): ?>
+            <img
+              src="../uploads/current/<?php echo htmlspecialchars($item['image_path']); ?>"
+              alt="<?php echo htmlspecialchars($item['title']); ?>"
+              style="width: 200px; height: 150px; object-fit: cover; border-radius: 10px; flex-shrink: 0; border: 1px solid rgba(148, 163, 184, 0.2);">
           <?php endif; ?>
 
-          <p style="color: #6b7280; font-size: 0.875rem;">
-            📅 <?php echo date('d M Y', strtotime($item['created_at'])); ?>
-            | ✍️ <?php echo htmlspecialchars($item['author'] ?? 'Admin'); ?>
-          </p>
+          <div style="flex: 1; min-width: 0;">
+            <h3 style="color: #f1f5f9; margin-bottom: 0.75rem; font-size: 1.25rem; font-weight: 600; line-height: 1.4;">
+              <?php echo htmlspecialchars($item['title']); ?>
+            </h3>
 
-          <a href="current.php?id=<?php echo $item['id']; ?>" style="text-decoration: none;">
-            <button type="button" style="margin-top: 0.75rem; font-size: 0.875rem; padding: 0.5rem 1rem;">
-              📖 Read Full Article
-            </button>
-          </a>
+            <?php if (!empty($item['summary'])): ?>
+              <p style="color: #cbd5e1; margin-bottom: 1rem; line-height: 1.6;">
+                <?php echo htmlspecialchars($item['summary']); ?>
+              </p>
+            <?php else: ?>
+              <p style="color: #cbd5e1; margin-bottom: 1rem; line-height: 1.6;">
+                <?php echo htmlspecialchars(mb_substr(strip_tags($item['content']), 0, 200)) . '...'; ?>
+              </p>
+            <?php endif; ?>
+
+            <div class="current-meta" style="display: flex; align-items: center; gap: 1.5rem; color: #94a3b8; font-size: 0.875rem; flex-wrap: wrap;">
+              <span style="display: flex; align-items: center; gap: 0.5rem;">
+                📅 <?php echo date('d M Y', strtotime($item['created_at'])); ?>
+              </span>
+              <span style="display: flex; align-items: center; gap: 0.5rem;">
+                ✍️ <?php echo htmlspecialchars($item['author'] ?? 'Admin'); ?>
+              </span>
+              <span style="color: #60a5fa; font-weight: 600; margin-left: auto;">
+                📖 Read Full Article →
+              </span>
+            </div>
+          </div>
         </div>
-      </div>
+      </a>
     <?php endforeach; ?>
+  </div>
+<?php endif; ?>
+
+<!-- Contribute Section -->
+<?php if (!empty($_SESSION['user_id'])): ?>
+  <div style="margin-top: 3rem; padding: 2.5rem; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%); border-radius: 16px; text-align: center; border: 1px solid rgba(59, 130, 246, 0.3);">
+    <h3 style="color: #f1f5f9; margin-bottom: 1rem; font-size: 1.5rem; font-weight: 600;">📝 Share Current Affairs</h3>
+    <p style="color: #cbd5e1; margin-bottom: 1.5rem; font-size: 1.1rem;">
+      Have important news or updates to share? Contribute to our current affairs repository and help others stay informed.
+    </p>
+    <a href="add_current.php">
+      <button type="button" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 1rem 2.5rem; font-size: 1rem; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+        ➕ Add Current Affairs Article
+      </button>
+    </a>
   </div>
 <?php endif; ?>
 

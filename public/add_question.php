@@ -22,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $stmt = $pdo->prepare("
-            INSERT INTO questions (user_id, title, year, subject, qtype, description, drive_folder_link)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO questions (user_id, title, year, subject, qtype, description, drive_folder_link, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
         ");
         $stmt->execute([$_SESSION['user_id'], $title, $year, $subject, $qtype, $description, $drive_link]);
 

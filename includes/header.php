@@ -32,7 +32,7 @@ $page_url = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
   <meta property="og:url" content="<?php echo htmlspecialchars($page_url); ?>">
   <meta property="og:title" content="<?php echo htmlspecialchars($page_title); ?>">
   <meta property="og:description" content="<?php echo htmlspecialchars($page_description); ?>">
-  <meta property="og:image" content="https://<?php echo $_SERVER['HTTP_HOST']; ?>/readandrise/assets/og-image.jpg">
+  <meta property="og:image" content="https://<?php echo $_SERVER['HTTP_HOST']; ?>/ReadAndRise/assets/og-image.jpg">
   <meta property="og:site_name" content="ReadAndRise">
   <meta property="og:locale" content="en_US">
 
@@ -41,11 +41,11 @@ $page_url = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
   <meta name="twitter:url" content="<?php echo htmlspecialchars($page_url); ?>">
   <meta name="twitter:title" content="<?php echo htmlspecialchars($page_title); ?>">
   <meta name="twitter:description" content="<?php echo htmlspecialchars($page_description); ?>">
-  <meta name="twitter:image" content="https://<?php echo $_SERVER['HTTP_HOST']; ?>/readandrise/assets/og-image.jpg">
+  <meta name="twitter:image" content="https://<?php echo $_SERVER['HTTP_HOST']; ?>/ReadAndRise/assets/og-image.jpg">
 
   <!-- Favicon and Icons -->
-  <link rel="icon" type="image/x-icon" href="/readandrise/assets/favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="/readandrise/assets/apple-touch-icon.png">
+  <link rel="icon" type="image/x-icon" href="/ReadAndRise/assets/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/ReadAndRise/assets/apple-touch-icon.png">
 
   <!-- Structured Data / JSON-LD -->
   <script type="application/ld+json">
@@ -54,8 +54,8 @@ $page_url = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
       "@type": "EducationalOrganization",
       "name": "ReadAndRise",
       "description": "Free educational platform for competitive exam preparation",
-      "url": "https://<?php echo $_SERVER['HTTP_HOST']; ?>/readandrise/",
-      "logo": "https://<?php echo $_SERVER['HTTP_HOST']; ?>/readandrise/assets/logo.png",
+      "url": "https://<?php echo $_SERVER['HTTP_HOST']; ?>/ReadAndRise/",
+      "logo": "https://<?php echo $_SERVER['HTTP_HOST']; ?>/ReadAndRise/assets/logo.png",
       "sameAs": [
         "https://github.com/NabinMahanty/ReadAndRise"
       ]
@@ -65,15 +65,22 @@ $page_url = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
   <!-- Preconnect for Performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://unpkg.com">
+
+  <!-- Preload Critical Resources -->
+  <link rel="preload" href="/ReadAndRise/assets/style.css" as="style">
+  <link rel="preload" href="/ReadAndRise/assets/logo.png" as="image">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="/readandrise/assets/style.css">
+  <link rel="stylesheet" href="/ReadAndRise/assets/style.css">
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Google Fonts - Optimized with display=swap and reduced weights -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Lottie Web Component CDN - Load in HEAD for faster init -->
-  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.5/dist/dotlottie-wc.js" type="module"></script>
+  <!-- Lottie Web Component CDN - Deferred for better performance -->
+  <link rel="preload" href="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.5/dist/dotlottie-wc.js" as="script">
+  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.5/dist/dotlottie-wc.js" type="module" defer></script>
 
   <!-- ================= LOADING SCREEN: DOTLOTTIE VERSION =================== -->
   <style>
@@ -141,63 +148,62 @@ $page_url = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     <div class="header-container">
       <div class="logo-section">
         <h1 class="site-logo">
-          <a href="/readandrise/public/index.php">
-            <span class="logo-icon">🎯</span>
-            <span class="logo-text">ReadAndRise</span>
+          <a href="/ReadAndRise/public/index.php">
+            <img src="/ReadAndRise/assets/logo.png" alt="ReadAndRise Logo" class="logo-image" width="200" height="50" loading="eager">
           </a>
         </h1>
-        <p class="site-tagline">Excellence Through Knowledge</p>
       </div>
 
       <nav class="main-nav">
-        <a href="/readandrise/public/index.php" class="nav-link">
-          <span class="nav-icon">🏠</span>
-          <span>Home</span>
-        </a>
-        <a href="/readandrise/public/notes.php" class="nav-link">
-          <span class="nav-icon">📚</span>
-          <span>Study Materials</span>
-        </a>
-        <a href="/readandrise/public/blogs.php" class="nav-link">
-          <span class="nav-icon">✨</span>
-          <span>Success Stories</span>
-        </a>
-        <a href="/readandrise/public/current_affairs.php" class="nav-link">
-          <span class="nav-icon">📰</span>
-          <span>Current Affairs</span>
-        </a>
-        <a href="/readandrise/public/questions.php" class="nav-link">
-          <span class="nav-icon">📝</span>
-          <span>Question Papers</span>
-        </a>
+        <a href="/ReadAndRise/public/index.php" class="nav-link">Home</a>
+
+        <div class="nav-dropdown">
+          <button class="nav-link dropdown-trigger">
+            Resources <span class="dropdown-arrow">▼</span>
+          </button>
+          <div class="dropdown-menu">
+            <a href="/ReadAndRise/public/notes.php" class="dropdown-item">
+              <span class="dropdown-icon">📚</span>
+              <div>
+                <div class="dropdown-title">Study Materials</div>
+                <div class="dropdown-desc">Notes and study resources</div>
+              </div>
+            </a>
+            <a href="/ReadAndRise/public/current_affairs.php" class="dropdown-item">
+              <span class="dropdown-icon">📰</span>
+              <div>
+                <div class="dropdown-title">Current Affairs</div>
+                <div class="dropdown-desc">Latest updates and news</div>
+              </div>
+            </a>
+            <a href="/ReadAndRise/public/questions.php" class="dropdown-item">
+              <span class="dropdown-icon">📝</span>
+              <div>
+                <div class="dropdown-title">Question Papers</div>
+                <div class="dropdown-desc">Previous year papers</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <a href="/ReadAndRise/public/blogs.php" class="nav-link">Success Stories</a>
 
         <?php if (!empty($_SESSION['user_id'])): ?>
           <?php if (!empty($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-            <a href="/readandrise/admin/index.php" class="nav-link nav-admin">
-              <span class="nav-icon">⚙️</span>
-              <span>Command Center</span>
-            </a>
+            <a href="/ReadAndRise/admin/index.php" class="nav-link">Admin</a>
           <?php endif; ?>
-
-          <a href="/readandrise/public/dashboard.php" class="nav-link nav-dashboard">
-            <span class="nav-icon">📊</span>
-            <span>Dashboard</span>
-          </a>
-          <a href="/readandrise/public/logout.php" class="nav-link nav-logout">
-            <span class="nav-icon">🚪</span>
-            <span>Logout</span>
-          </a>
-        <?php else: ?>
-          <a href="/readandrise/public/login.php" class="nav-link nav-login">
-            <span class="nav-icon">🔐</span>
-            <span>Login</span>
-          </a>
-          <a href="/readandrise/public/register.php" class="nav-link nav-register">
-            <span class="nav-icon">📝</span>
-            <span>Join Now</span>
-          </a>
+          <a href="/ReadAndRise/public/dashboard.php" class="nav-link">Dashboard</a>
         <?php endif; ?>
       </nav>
+
+      <div class="header-actions">
+        <?php if (!empty($_SESSION['user_id'])): ?>
+          <a href="/ReadAndRise/public/logout.php" class="btn-secondary">Logout</a>
+        <?php else: ?>
+          <a href="/ReadAndRise/public/login.php" class="btn-secondary">Login</a>
+          <a href="/ReadAndRise/public/register.php" class="btn-primary">Sign up</a>
+        <?php endif; ?>
+      </div>
 
       <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
         <span></span>

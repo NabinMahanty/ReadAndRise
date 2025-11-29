@@ -82,8 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $stmt = $pdo->prepare("
-    INSERT INTO notes (user_id, title, slug, category, tags, content, attachment_path)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO notes (user_id, title, slug, category, tags, content, attachment_path, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
 ");
     $stmt->execute([
       $_SESSION['user_id'],

@@ -17,19 +17,19 @@
       <div class="footer-section">
         <h4>Quick Links</h4>
         <ul class="footer-links">
-          <li><a href="/readandrise/public/index.php">Home</a></li>
-          <li><a href="/readandrise/public/notes.php">Study Materials</a></li>
-          <li><a href="/readandrise/public/blogs.php">Success Stories</a></li>
-          <li><a href="/readandrise/public/register.php">Join Community</a></li>
+          <li><a href="/ReadAndRise/public/index.php">Home</a></li>
+          <li><a href="/ReadAndRise/public/notes.php">Study Materials</a></li>
+          <li><a href="/ReadAndRise/public/blogs.php">Success Stories</a></li>
+          <li><a href="/ReadAndRise/public/register.php">Join Community</a></li>
         </ul>
       </div>
 
       <div class="footer-section">
         <h4>Resources</h4>
         <ul class="footer-links">
-          <li><a href="/readandrise/public/add_note.php">Upload Notes</a></li>
-          <li><a href="/readandrise/public/add_blog.php">Share Your Story</a></li>
-          <li><a href="/readandrise/public/dashboard.php">Dashboard</a></li>
+          <li><a href="/ReadAndRise/public/add_note.php">Upload Notes</a></li>
+          <li><a href="/ReadAndRise/public/add_blog.php">Share Your Story</a></li>
+          <li><a href="/ReadAndRise/public/dashboard.php">Dashboard</a></li>
         </ul>
       </div>
 
@@ -59,25 +59,135 @@
       }
     });
 
-    // Mobile menu toggle
-    document.querySelector('.mobile-menu-toggle')?.addEventListener('click', function() {
-      document.querySelector('.main-nav')?.classList.toggle('active');
-      this.classList.toggle('active');
+    // Mobile menu toggle - Enhanced for responsive design
+    const menuToggle = document.querySelector('.mobile-menu-toggle');
+    const mainNav = document.querySelector('.main-nav');
+    const headerActions = document.querySelector('.header-actions');
+
+    if (menuToggle && mainNav) {
+      menuToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        mainNav.classList.toggle('mobile-active');
+        headerActions?.classList.toggle('mobile-active');
+        this.classList.toggle('active');
+
+        // Animate hamburger icon
+        const spans = this.querySelectorAll('span');
+        if (this.classList.contains('active')) {
+          spans[0].style.transform = 'rotate(45deg) translateY(8px)';
+          spans[1].style.opacity = '0';
+          spans[2].style.transform = 'rotate(-45deg) translateY(-8px)';
+        } else {
+          spans[0].style.transform = 'none';
+          spans[1].style.opacity = '1';
+          spans[2].style.transform = 'none';
+        }
+      }, {
+        passive: false
+      });
+
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.main-nav') &&
+          !e.target.closest('.mobile-menu-toggle') &&
+          mainNav.classList.contains('mobile-active')) {
+          mainNav.classList.remove('mobile-active');
+          headerActions?.classList.remove('mobile-active');
+          menuToggle.classList.remove('active');
+
+          const spans = menuToggle.querySelectorAll('span');
+          spans[0].style.transform = 'none';
+          spans[1].style.opacity = '1';
+          spans[2].style.transform = 'none';
+        }
+      });
+    }
+
+    // Mobile dropdown toggle - optimized
+    document.querySelectorAll('.dropdown-trigger').forEach(trigger => {
+      trigger.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          const dropdown = this.closest('.nav-dropdown');
+          const menu = dropdown.querySelector('.dropdown-menu');
+
+          // Toggle active state
+          dropdown.classList.toggle('active');
+
+          // Animate dropdown arrow
+          const arrow = this.querySelector('.dropdown-arrow');
+          if (arrow) {
+            arrow.style.transform = dropdown.classList.contains('active') ?
+              'rotate(180deg)' :
+              'rotate(0deg)';
+          }
+        }
+      }, {
+        passive: false
+      });
     });
 
-    // Smooth scroll for anchor links
+    // Close mobile menu on window resize
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        if (window.innerWidth > 768) {
+          mainNav?.classList.remove('mobile-active');
+          headerActions?.classList.remove('mobile-active');
+          menuToggle?.classList.remove('active');
+
+          if (menuToggle) {
+            const spans = menuToggle.querySelectorAll('span');
+            spans[0].style.transform = 'none';
+            spans[1].style.opacity = '1';
+            spans[2].style.transform = 'none';
+          }
+        }
+      }, 250);
+    });
+
+    // Smooth scroll for anchor links - optimized
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
+        const target = document.querySelector(targetId);
         if (target) {
           target.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
           });
+
+          // Close mobile menu after navigation
+          if (window.innerWidth <= 768) {
+            mainNav?.classList.remove('mobile-active');
+            headerActions?.classList.remove('mobile-active');
+            menuToggle?.classList.remove('active');
+          }
         }
+      }, {
+        passive: false
       });
     });
+
+    // Lazy load images that aren't critical
+    if ('loading' in HTMLImageElement.prototype) {
+      const images = document.querySelectorAll('img[loading="lazy"]');
+      images.forEach(img => {
+        if (img.dataset.src) {
+          img.src = img.dataset.src;
+        }
+      });
+    } else {
+      // Fallback for browsers that don't support lazy loading
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
   </script>
   </body>
 

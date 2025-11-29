@@ -51,8 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $stmt = $pdo->prepare("
-            INSERT INTO blogs (user_id, title, slug, category, content)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO blogs (user_id, title, slug, category, content, status)
+            VALUES (?, ?, ?, ?, ?, 'pending')
         ");
     $stmt->execute([
       $_SESSION['user_id'],

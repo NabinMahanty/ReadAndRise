@@ -1,6 +1,6 @@
 # 🎯 ReadAndRise
 
-**Excellence Through Knowledge**
+**Never Forget Your Lakshya**
 
 A premium, free educational platform where aspirants can access comprehensive exam notes, share study materials, and read inspiring success stories from fellow students. Built with PHP, MySQL, and modern web technologies—100% free, 100% community-driven.
 
@@ -13,38 +13,53 @@ A premium, free educational platform where aspirants can access comprehensive ex
 - 📚 **Comprehensive Study Materials** - Access curated notes for CDS, AFCAT, NDA, Computer Science, Programming, and more
 - 📝 **Community Contributions** - Upload and share your study materials with thousands of fellow aspirants
 - 📄 **PDF Support** - Attach PDF documents to your notes for comprehensive learning resources
+- 📰 **Current Affairs** - Stay updated with latest news and developments relevant to competitive exams
+- 📝 **Question Papers** - Access previous year question papers with Google Drive folder links
 - ✨ **Success Stories** - Read and share real preparation journeys, struggles, and triumphs
-- 🔍 **Advanced Filtering** - Find notes by exam categories, subjects, and tags
+- 🔍 **Advanced Filtering** - Find notes by exam categories, subjects, tags, year, and more
 - 🏷️ **Smart Tagging** - Discover relevant materials through intelligent tag-based search
-- 📱 **Mobile Optimized** - Study on-the-go with fully responsive design
-- 🎨 **Modern UI/UX** - Beautiful, intuitive interface with smooth animations
+- 📱 **Fully Responsive** - Perfect experience on mobile, tablet, and desktop devices
+- 🎨 **Modern Dark Theme** - Beautiful dark UI with vibrant gradients and smooth animations
 
 ### For Administrators
 
-- ✅ **Content Moderation** - Review and approve pending notes and success stories
+- ✅ **Content Moderation** - Review and approve pending notes, stories, current affairs, and question papers
 - 👥 **User Management** - Monitor and manage registered community members
-- 📊 **Analytics Dashboard** - Track platform activity and pending content
+- 📊 **Analytics Dashboard** - Track platform activity and pending content across all sections
 - 🔒 **Secure Admin Panel** - Protected command center with role-based access
 - ⚡ **Quick Actions** - One-click approve/reject for efficient moderation
+- 📈 **Statistics Overview** - Real-time metrics for all content types
 
 ---
 
 ## 🚀 What's New in v2.0
 
-### Design & UX
+### Design & UX Overhaul
 
-- ✅ **Complete UI Redesign** - Energetic, vibrant color palette with electric blue, fire orange, and cyan accents
-- ✅ **Interactive Elements** - Smooth animations, gradient buttons, hover effects with glowing shadows
-- ✅ **Modern Typography** - Inter font family with multiple weights for professional appearance
-- ✅ **Mobile First** - Completely responsive across all devices with optimized touch targets
-- ✅ **Professional English** - Transformed from Hinglish to crisp, officer-grade professional content
+- ✅ **Complete Dark Theme Redesign** - Modern dark (#0f172a, #1e293b) with blue accents (#60a5fa)
+- ✅ **Fully Responsive** - Mobile-first design with breakpoints for all devices (mobile, tablet, desktop)
+- ✅ **Interactive Mobile Menu** - Hamburger navigation with smooth animations
+- ✅ **Gradient Cards** - Beautiful card designs with subtle gradients and hover effects
+- ✅ **Consistent UI** - Unified design system across all pages (public, dashboard, admin)
+- ✅ **Touch-Friendly** - Optimized button sizes and spacing for mobile devices
+- ✅ **Modern Typography** - Inter font family with professional hierarchy
+
+### New Features
+
+- ✅ **Current Affairs Section** - Complete repository for exam-related news and updates
+- ✅ **Question Papers Module** - Share Google Drive folders with previous year papers
+- ✅ **Enhanced Search & Filters** - Multi-column filters with year, subject, and category options
+- ✅ **Status Badges** - Color-coded badges (green/approved, yellow/pending, red/rejected)
+- ✅ **Empty States** - Helpful messages and suggestions when no content is found
+- ✅ **Results Count** - Real-time display of search results
 
 ### SEO & Performance
 
 - ✅ **SEO Optimized** - Comprehensive meta tags, Open Graph, Twitter Cards, JSON-LD structured data
+- ✅ **Dynamic Page Titles** - Context-aware titles and descriptions for better search rankings
 - ✅ **Sitemap & Robots.txt** - XML sitemap for search engines, crawl optimization
-- ✅ **Performance Enhanced** - GZIP compression, browser caching, optimized assets via .htaccess
-- ✅ **Core Web Vitals** - Optimized for LCP, FID, and CLS metrics
+- ✅ **Performance Enhanced** - GZIP compression, browser caching, optimized assets
+- ✅ **Loading Animations** - Lottie-based loader with smooth transitions
 
 ### Security & Accessibility
 
@@ -116,13 +131,42 @@ CREATE TABLE notes (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Blogs table (for struggle stories)
+-- Blogs table (Success Stories)
 CREATE TABLE blogs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     slug VARCHAR(255) UNIQUE NOT NULL,
+    category VARCHAR(100) NOT NULL,
     content TEXT NOT NULL,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Current Affairs table
+CREATE TABLE current_affairs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    summary TEXT,
+    content TEXT NOT NULL,
+    image_path VARCHAR(255) NULL,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Questions table (Previous Year Papers)
+CREATE TABLE questions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    year INT NOT NULL,
+    subject VARCHAR(100) NOT NULL,
+    qtype VARCHAR(50) NOT NULL,
+    description TEXT,
+    drive_folder_link VARCHAR(500) NOT NULL,
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -149,10 +193,11 @@ $pass = "";  // Your MySQL password
 ```bash
 # Windows (PowerShell)
 New-Item -ItemType Directory -Path "uploads\notes" -Force
+New-Item -ItemType Directory -Path "uploads\current" -Force
 
 # Linux/Mac
-mkdir -p uploads/notes
-chmod 755 uploads/notes
+mkdir -p uploads/notes uploads/current
+chmod 755 uploads/notes uploads/current
 ```
 
 ### 5. Configure .htaccess (Optional but Recommended)
@@ -198,36 +243,50 @@ http://localhost/ReadAndRise/admin/
 
 ```
 ReadAndRise/
-├── admin/                  # Admin panel
-│   ├── index.php          # Admin dashboard
-│   ├── notes_pending.php  # Review pending notes
-│   └── blogs_pending.php  # Review pending success stories
-├── assets/                # Static assets
-│   └── style.css         # Main stylesheet (1176 lines, energetic theme)
-├── includes/              # Shared PHP includes
-│   ├── auth.php          # Authentication helpers
-│   ├── db.php            # Database connection (PDO)
-│   ├── header.php        # Header with SEO meta tags
-│   └── footer.php        # Footer component
-├── public/                # Public pages
-│   ├── index.php         # Homepage with statistics
-│   ├── login.php         # User login
-│   ├── register.php      # User registration
-│   ├── dashboard.php     # User dashboard
-│   ├── notes.php         # Browse study materials
-│   ├── note.php          # View single note
-│   ├── add_note.php      # Upload new note
-│   ├── blogs.php         # Success stories listing
-│   ├── blog.php          # View single success story
-│   ├── add_blog.php      # Share success story
-│   └── logout.php        # Logout handler
-├── uploads/               # User uploads
-│   └── notes/            # PDF attachments
-├── .htaccess             # Apache configuration
-├── .gitignore            # Git exclusions
-├── robots.txt            # Search engine crawl rules
-├── sitemap.xml           # XML sitemap for SEO
-└── README.md             # This file
+├── admin/                     # Admin panel
+│   ├── index.php             # Admin dashboard with statistics
+│   ├── notes_pending.php     # Review pending study materials
+│   ├── blogs_pending.php     # Review pending success stories
+│   ├── current_pending.php   # Review pending current affairs
+│   ├── questions_pending.php # Review pending question papers
+│   └── add_current.php       # Admin: Add current affairs
+├── assets/                    # Static assets
+│   ├── style.css             # Main stylesheet (2000+ lines, dark theme)
+│   └── logo.png              # Platform logo
+├── includes/                  # Shared PHP includes
+│   ├── auth.php              # Authentication helpers
+│   ├── db.php                # Database connection (PDO)
+│   ├── header.php            # Header with SEO, navigation, loader
+│   └── footer.php            # Footer with mobile menu JS
+├── public/                    # Public pages
+│   ├── index.php             # Homepage with hero section
+│   ├── login.php             # User login
+│   ├── register.php          # User registration
+│   ├── dashboard.php         # User dashboard with all contributions
+│   ├── notes.php             # Browse study materials
+│   ├── note.php              # View single note
+│   ├── add_note.php          # Upload new note
+│   ├── edit_note.php         # Edit your note
+│   ├── delete_note.php       # Delete your note
+│   ├── current_affairs.php   # Browse current affairs
+│   ├── current.php           # View single current affair
+│   ├── add_current.php       # Add current affair
+│   ├── questions.php         # Browse question papers
+│   ├── add_question.php      # Submit question paper folder
+│   ├── blogs.php             # Success stories listing
+│   ├── blog.php              # View single success story
+│   ├── add_blog.php          # Share success story
+│   ├── edit_blog.php         # Edit your story
+│   ├── delete_blog.php       # Delete your story
+│   └── logout.php            # Logout handler
+├── uploads/                   # User uploads
+│   ├── notes/                # PDF attachments for notes
+│   └── current/              # Images for current affairs
+├── .htaccess                 # Apache configuration
+├── .gitignore                # Git exclusions
+├── robots.txt                # Search engine crawl rules
+├── sitemap.xml               # XML sitemap for SEO
+└── README.md                 # This file
 ```
 
 ---
@@ -238,15 +297,23 @@ ReadAndRise/
 
 - Register and login
 - Upload notes with PDF attachments
-- View approved notes
-- Manage own submissions
+- Share current affairs articles with images
+- Submit question paper Google Drive folders
+- Write and share success stories
+- View approved content
+- Manage own submissions via dashboard
+- Track approval status (pending/approved/rejected)
 
 ### Admin
 
 - All user permissions
 - Approve/reject notes
 - Approve/reject blogs
+- Approve/reject current affairs
+- Approve/reject question papers
 - Access admin panel at `/admin/`
+- View comprehensive statistics
+- Monitor all pending submissions
 
 **Default Admin Login:**
 
@@ -275,19 +342,22 @@ ReadAndRise/
 
 1. **Register** - Create a free account with name, email, and password
 2. **Browse Materials** - Explore study notes by category (CDS, AFCAT, NDA, Computer Science, etc.)
-3. **Filter & Search** - Use category dropdown and search to find specific content
-4. **Upload Notes** - Share your study materials with PDF attachments
-5. **Share Stories** - Write about your preparation journey and struggles
-6. **Track Status** - Monitor approval status in your personal dashboard
-7. **Read Success Stories** - Get inspired by others' journeys
+3. **Filter & Search** - Use category dropdown, year filter, subject search to find specific content
+4. **Upload Notes** - Share your study materials with PDF attachments (max 10MB)
+5. **Add Current Affairs** - Post exam-related news with optional images
+6. **Submit Question Papers** - Share Google Drive folder links with previous year papers
+7. **Share Stories** - Write about your preparation journey and struggles
+8. **Track Status** - Monitor approval status in your personal dashboard (color-coded badges)
+9. **Edit/Delete** - Manage your contributions from the dashboard
 
 ### For Admins:
 
 1. **Login** - Use admin credentials to access admin panel
-2. **Review Content** - Check pending notes and success stories
+2. **Review Content** - Check pending notes, stories, current affairs, and question papers
 3. **Approve/Reject** - Moderate submissions with one-click actions
-4. **Monitor Platform** - Track platform activity and statistics
-5. **Manage Quality** - Ensure high-quality, relevant content for community
+4. **Preview Before Approval** - View full content before making decision
+5. **Monitor Platform** - Track platform activity and statistics in dashboard
+6. **Manage Quality** - Ensure high-quality, relevant content for community
 
 ---
 
@@ -295,56 +365,138 @@ ReadAndRise/
 
 ### Study Materials System
 
-- **Upload Notes** - Title, category, tags, rich content editor, and optional PDF attachment
+- **Upload Notes** - Title, category, tags, rich content editor, and optional PDF attachment (max 10MB)
 - **PDF Validation** - Secure file upload with MIME type and extension checking
-- **Automatic Slug Generation** - SEO-friendly URLs from titles
-- **Moderation Workflow** - Pending → Approved/Rejected status flow
+- **Automatic Slug Generation** - SEO-friendly URLs from titles with uniqueness check
+- **Moderation Workflow** - Pending → Approved/Rejected status flow with color-coded badges
 - **Category Organization** - Structured by exam type (CDS, AFCAT, NDA, Computer Science, Programming)
 - **Tag-Based Discovery** - Multiple tags per note for enhanced searchability
-- **Rich Content Display** - Card-based UI with author, timestamp, and metadata
+- **Rich Content Display** - Card-based dark UI with gradient backgrounds, author info, timestamps
+
+### Current Affairs Module
+
+- **Submit Articles** - Title, summary, full content, and optional image upload
+- **Image Support** - Visual content for better engagement (stored in uploads/current/)
+- **Search Functionality** - Find relevant articles by keywords across title, summary, and content
+- **Results Count** - Real-time display of matching articles
+- **Preview Links** - Admins can preview before approving
+- **Card Layout** - Beautiful cards with image thumbnails and article metadata
+
+### Question Papers Repository
+
+- **Google Drive Integration** - Share folder links containing question papers
+- **Year & Subject Filters** - Three-column filter (search, year dropdown, subject input)
+- **Question Type** - Categorize as CDS, AFCAT, NDA, etc.
+- **Description Field** - Add context about the papers
+- **Direct Access** - "Open Folder" buttons linking to Google Drive
+- **Badge Display** - Color-coded badges for year, subject, and type
 
 ### Success Stories Platform
 
 - **Share Journeys** - Students can write about their preparation experiences
+- **Category System** - Organize stories by type (Preparation Journey, Strategy Tips, Success Stories)
 - **Inspiration Hub** - Read real stories of struggle, perseverance, and success
 - **Moderation System** - Admin approval ensures quality content
-- **Professional Layout** - Clean, readable format with golden gradient theme
-- **Search & Filter** - Find relevant stories easily
+- **Search & Filter** - Find relevant stories by keywords and category
+- **Professional Layout** - Clean, readable format with dark theme
+
+### User Dashboard
+
+- **Contribution Overview** - Statistics cards showing counts for each content type
+- **Welcome Section** - Personalized greeting with quick action buttons
+- **All Submissions** - Separate sections for notes, blogs, current affairs, and question papers
+- **Status Tracking** - Color-coded badges (green=approved, yellow=pending, red=rejected)
+- **Quick Actions** - Edit and delete buttons for all your content
+- **Empty States** - Helpful messages encouraging first contribution
 
 ### Admin Moderation Panel
 
-- **Dashboard Overview** - Real-time counts of pending content
-- **Quick Review Interface** - Streamlined approve/reject workflow
-- **One-Click Actions** - Efficient content moderation
+- **Dashboard Overview** - Real-time counts of pending items across all categories
+- **Statistics Cards** - Pending, approved, and rejected counts with color-coded themes
+- **Quick Review Interface** - Streamlined approve/reject workflow for all content types
+- **Preview Functionality** - View full content before making moderation decision
+- **One-Click Actions** - Efficient content moderation with immediate feedback
 - **Secure Access** - Role-based authentication and authorization
-- **User Management** - Monitor registered community members
+- **Recent Activity** - Track latest submissions
 
 ### UI/UX Excellence
 
-- **Energetic Color Palette** - Electric blue (#0066ff), fire orange (#ff4500), cyan (#00d4ff)
-- **Gradient Buttons** - Multi-color gradients with hover effects and glowing shadows
-- **Smooth Animations** - CSS transitions for professional feel
-- **Responsive Design** - Mobile-first approach with breakpoints at 768px and 480px
-- **Interactive Elements** - Hover states, focus indicators, loading animations
-- **Professional Typography** - Inter font family (weights 300-800) for clarity
+- **Dark Theme Design** - Modern dark color palette (#0f172a, #1e293b, #334155)
+- **Blue Accent Colors** - Primary blue (#60a5fa) for CTAs and highlights
+- **Gradient Backgrounds** - Subtle gradients (135deg) on cards and buttons
+- **Status Color System** - Green (approved), Yellow (pending), Red (rejected)
+- **Smooth Animations** - CSS transitions for professional feel (0.3s ease)
+- **Responsive Breakpoints** - Mobile (≤768px), Tablet (769-1024px), Desktop (>1024px)
+- **Touch-Friendly** - Optimized button sizes and spacing for mobile devices
+- **Interactive Elements** - Hover states, focus indicators, active states
+- **Professional Typography** - Inter font family (weights 400-700) for clarity and hierarchy
+- **Mobile Menu** - Hamburger navigation with smooth slide-in animation
+- **Empty States** - Helpful messages with suggestions when no content found
+- **Loading Animation** - Lottie-based loader with smooth fade transition
+
+---
+
+## 📱 Mobile Testing Guide
+
+### Local Network Testing
+
+To test on your mobile device:
+
+1. **Find Your Computer's IP Address:**
+
+   ```powershell
+   ipconfig | Select-String -Pattern "IPv4"
+   ```
+
+2. **Configure Windows Firewall:**
+
+   - Open Windows Firewall settings
+   - Allow Apache HTTP Server (port 80)
+   - Or manually allow `C:\xampp\apache\bin\httpd.exe`
+
+3. **Ensure Same WiFi Network:**
+
+   - Connect both computer and mobile to same WiFi
+
+4. **Access on Mobile:**
+   ```
+   http://YOUR_IP_ADDRESS/ReadAndRise/public/index.php
+   ```
+
+### Browser DevTools Testing (Instant)
+
+1. Open site in Chrome/Edge
+2. Press **F12** to open DevTools
+3. Click device toggle icon (Ctrl+Shift+M)
+4. Select device (iPhone, Samsung Galaxy, iPad, etc.)
+5. Test in different orientations
+
+### Using ngrok (Remote Testing)
+
+1. Download ngrok from https://ngrok.com
+2. Run: `ngrok http 80`
+3. Access via public URL provided
 
 ---
 
 ## 🚧 Upcoming Features
 
-- [ ] **Advanced Search** - Full-text search across notes with highlighting
-- [ ] **Comments System** - Discussion threads on notes and stories
-- [ ] **User Profiles** - Public profile pages with contribution history
-- [ ] **Email Notifications** - Notify users on approval/rejection status
-- [ ] **Bookmark System** - Save and organize favorite notes
-- [ ] **Social Sharing** - Share notes on WhatsApp, Telegram, Facebook, Twitter
-- [ ] **Dark Mode** - Toggle between light and dark themes
-- [ ] **Rating System** - Upvote/downvote notes for quality ranking
-- [ ] **Related Content** - AI-suggested similar notes and stories
+- [ ] **Advanced Search** - Full-text search across all content types with highlighting
+- [ ] **Comments System** - Discussion threads on notes, stories, and current affairs
+- [ ] **User Profiles** - Public profile pages with contribution history and statistics
+- [ ] **Email Notifications** - Notify users on approval/rejection status via email
+- [ ] **Bookmark System** - Save and organize favorite notes and articles
+- [ ] **Social Sharing** - Share content on WhatsApp, Telegram, Facebook, Twitter
+- [ ] **Light/Dark Mode Toggle** - User preference for theme selection
+- [ ] **Rating System** - Upvote/downvote content for quality ranking
+- [ ] **Related Content** - AI-suggested similar notes and articles
 - [ ] **Export Options** - Download notes as PDF or print-friendly format
-- [ ] **Analytics Dashboard** - View statistics and user engagement metrics
+- [ ] **Analytics Dashboard** - Advanced metrics and user engagement statistics
 - [ ] **Mobile App** - Native Android/iOS applications
-- [ ] **Offline Support** - PWA with offline reading capabilities
+- [ ] **PWA Support** - Progressive Web App with offline reading capabilities
+- [ ] **Real-time Notifications** - Live updates for content approval
+- [ ] **Multi-language Support** - Hindi and regional languages
+- [ ] **Study Planner** - Personal study schedule and goal tracking
 
 ---
 
@@ -401,21 +553,38 @@ This project is open source and available under the [MIT License](LICENSE).
 
 **Upload Not Working:**
 
-- Check `uploads/notes/` directory exists and has write permissions
-- Verify PHP `upload_max_filesize` and `post_max_size` in php.ini
-- Only PDF files are accepted
+- Check `uploads/notes/` and `uploads/current/` directories exist with write permissions
+- Verify PHP `upload_max_filesize` and `post_max_size` in php.ini (recommended: 10M+)
+- Only PDF files accepted for notes, images (JPG/PNG) for current affairs
+- Check file size limits (10MB for PDFs, 5MB for images)
 
 **Admin Access Issues:**
 
 - Default credentials: `admin@readandrise.in` / `admin123`
-- Change password after first login for security
-- Check user role is set to 'admin' in database
+- **Important:** Change password after first login for security
+- Check user role is set to 'admin' in database users table
+- Clear browser cookies/cache if session issues occur
 
 **Styling Issues:**
 
-- Clear browser cache
-- Check `assets/style.css` is loading (1176 lines)
+- Clear browser cache (Ctrl+F5)
+- Check `assets/style.css` is loading properly (2000+ lines)
 - Verify no .htaccess conflicts
+- Ensure all CSS media queries are loaded
+
+**Responsive Design Not Working:**
+
+- Check viewport meta tag in header.php
+- Clear browser cache
+- Test in browser DevTools mobile view
+- Verify JavaScript in footer.php is loading
+
+**Mobile Access Issues:**
+
+- Ensure computer and mobile on same WiFi
+- Check Windows Firewall allows Apache (port 80)
+- Verify XAMPP Apache is running
+- Use correct IP address format: `http://IP_ADDRESS/ReadAndRise/...`
 
 ---
 
