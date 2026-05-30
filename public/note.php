@@ -65,7 +65,7 @@ if (!$note) {
   <?php if (!empty($note['attachment_path'])): ?>
     <h3>Attached PDF</h3>
     <iframe
-      src="/readandrise/uploads/notes/<?php echo htmlspecialchars($note['attachment_path']); ?>#toolbar=0"
+      src="/ReadAndRise/uploads/notes/<?php echo htmlspecialchars($note['attachment_path']); ?>#toolbar=0"
       width="100%"
       height="600px"
       style="border: 1px solid #ccc; border-radius:10px;">

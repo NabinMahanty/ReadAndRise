@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register - ReadAndRise</title>
-  <link rel="stylesheet" href="/readandrise/assets/style.css">
+  <link rel="stylesheet" href="/ReadAndRise/assets/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="auth-right">
       <div class="auth-form-container">
         <div class="auth-branding">
-          <img src="/readandrise/assets/logo.png" alt="ReadAndRise Logo" class="auth-logo">
+          <img src="/ReadAndRise/assets/logo.png" alt="ReadAndRise Logo" class="auth-logo">
         </div>
 
         <div class="auth-header">

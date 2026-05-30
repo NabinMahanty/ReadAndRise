@@ -143,6 +143,32 @@ $page_url = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     <div id="loader-title">ReadAndRise</div>
     <div id="loader-sub">Preparing your mission…</div>
   </div>
+  <script>
+    (function() {
+      var dismissed = false;
+      function dismissLoader() {
+        if (dismissed) return;
+        dismissed = true;
+        var loader = document.getElementById('page-loader');
+        if (loader) {
+          loader.classList.add('hidden');
+          document.body.classList.add('loaded');
+          setTimeout(function() {
+            if (loader.parentNode) {
+              loader.parentNode.removeChild(loader);
+            }
+          }, 600);
+        }
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', dismissLoader);
+      } else {
+        dismissLoader();
+      }
+      window.addEventListener('load', dismissLoader);
+      setTimeout(dismissLoader, 1000); // 1s safety timeout
+    })();
+  </script>
 
   <header class="main-header">
     <div class="header-container">

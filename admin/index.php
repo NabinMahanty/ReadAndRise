@@ -81,13 +81,13 @@ $totalRejected = $stats['rejected_notes'] + $stats['rejected_blogs'] + $stats['r
 
 // Get recent activities (latest 5 pending items)
 $recentActivities = $pdo->query("
-    (SELECT 'note' as type, title, created_at, status FROM notes WHERE status = 'pending' ORDER BY created_at DESC LIMIT 3)
+    SELECT * FROM (SELECT 'note' as type, title, created_at, status FROM notes WHERE status = 'pending' ORDER BY created_at DESC LIMIT 3) AS t1
     UNION
-    (SELECT 'blog' as type, title, created_at, status FROM blogs WHERE status = 'pending' ORDER BY created_at DESC LIMIT 2)
+    SELECT * FROM (SELECT 'blog' as type, title, created_at, status FROM blogs WHERE status = 'pending' ORDER BY created_at DESC LIMIT 2) AS t2
     UNION
-    (SELECT 'current' as type, title, created_at, status FROM current_affairs WHERE status = 'pending' ORDER BY created_at DESC LIMIT 2)
+    SELECT * FROM (SELECT 'current' as type, title, created_at, status FROM current_affairs WHERE status = 'pending' ORDER BY created_at DESC LIMIT 2) AS t3
     UNION
-    (SELECT 'question' as type, title, created_at, status FROM questions WHERE status = 'pending' ORDER BY created_at DESC LIMIT 2)
+    SELECT * FROM (SELECT 'question' as type, title, created_at, status FROM questions WHERE status = 'pending' ORDER BY created_at DESC LIMIT 2) AS t4
     ORDER BY created_at DESC
     LIMIT 8
 ")->fetchAll(PDO::FETCH_ASSOC);
@@ -428,19 +428,19 @@ $recentActivities = $pdo->query("
       <h3 style="color: #f1f5f9; font-size: 1.1rem; margin-bottom: 1rem;">⚡ Quick Actions</h3>
 
       <div style="display: grid; gap: 0.75rem;">
-        <a href="/readandrise/public/add_current.php" style="text-decoration: none;">
+        <a href="/ReadAndRise/public/add_current.php" style="text-decoration: none;">
           <div style="background: rgba(245, 158, 11, 0.1); padding: 0.875rem; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.2); color: #fde68a; transition: all 0.3s ease; cursor: pointer;">
             <strong>📰 Add Current Affairs</strong>
           </div>
         </a>
 
-        <a href="/readandrise/public/index.php" style="text-decoration: none;">
+        <a href="/ReadAndRise/public/index.php" style="text-decoration: none;">
           <div style="background: rgba(59, 130, 246, 0.1); padding: 0.875rem; border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.2); color: #93c5fd; transition: all 0.3s ease; cursor: pointer;">
             <strong>🏠 View Public Site</strong>
           </div>
         </a>
 
-        <a href="/readandrise/public/dashboard.php" style="text-decoration: none;">
+        <a href="/ReadAndRise/public/dashboard.php" style="text-decoration: none;">
           <div style="background: rgba(167, 139, 250, 0.1); padding: 0.875rem; border-radius: 8px; border: 1px solid rgba(167, 139, 250, 0.2); color: #c4b5fd; transition: all 0.3s ease; cursor: pointer;">
             <strong>📊 My Dashboard</strong>
           </div>

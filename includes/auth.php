@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 function require_login()
 {
   if (empty($_SESSION['user_id'])) {
-    header("Location: /readandrise/public/login.php");
+    header("Location: /ReadAndRise/public/login.php");
     exit;
   }
 }

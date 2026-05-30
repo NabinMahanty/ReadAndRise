@@ -93,7 +93,7 @@ try {
             // Insert admin user (password: admin123)
             $pdo->exec("
                 INSERT INTO `users` (`name`, `email`, `password`, `role`)
-                VALUES ('Admin', 'admin@readandrise.in', '\$2y\$10\$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+                VALUES ('Admin', 'admin@readandrise.in', '\$2y\$10\$II5J23yZuVYV7sLAdVLxz.vZKdp/c/0iBAKPP9KaT6s78VjAJ8O4m', 'admin');
             ");
         }
     } else {
@@ -188,7 +188,7 @@ try {
                 ");
                 $pdo->exec("
                     INSERT INTO `users` (`name`, `email`, `password`, `role`)
-                    VALUES ('Admin', 'admin@readandrise.in', '\$2y\$10\$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+                    VALUES ('Admin', 'admin@readandrise.in', '\$2y\$10\$II5J23yZuVYV7sLAdVLxz.vZKdp/c/0iBAKPP9KaT6s78VjAJ8O4m', 'admin');
                 ");
             }
             
