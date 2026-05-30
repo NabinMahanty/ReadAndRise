@@ -1,6 +1,7 @@
 <?php
 require_once "../includes/db.php";
 require_once "../includes/auth.php";
+require_once "../includes/csrf.php";
 
 require_login();
 
@@ -19,6 +20,7 @@ if (!$note) {
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  csrf_check();
   $title = trim($_POST['title'] ?? '');
   $category = trim($_POST['category'] ?? '');
   $tags = trim($_POST['tags'] ?? '');
@@ -40,32 +42,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle PDF upload if new file is provided
     $attachment_path = $note['attachment_path'];
     if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] === UPLOAD_ERR_OK) {
-      $allowed = ['application/pdf'];
-      $fileType = $_FILES['attachment']['type'];
-      $fileSize = $_FILES['attachment']['size'];
+      $file = $_FILES['attachment'];
+      $fileSize = $file['size'];
       $maxSize = 10 * 1024 * 1024; // 10MB
 
-      if (!in_array($fileType, $allowed)) {
-        $error = "Only PDF files are allowed.";
-      } elseif ($fileSize > $maxSize) {
+      if ($fileSize > $maxSize) {
         $error = "File size must not exceed 10MB.";
       } else {
-        $uploadDir = "../uploads/notes/";
-        if (!is_dir($uploadDir)) {
-          mkdir($uploadDir, 0755, true);
-        }
+        // Validate MIME using finfo
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
 
-        $fileName = uniqid() . '_' . basename($_FILES['attachment']['name']);
-        $targetPath = $uploadDir . $fileName;
-
-        if (move_uploaded_file($_FILES['attachment']['tmp_name'], $targetPath)) {
-          // Delete old file if exists
-          if ($attachment_path && file_exists("../" . $attachment_path)) {
-            unlink("../" . $attachment_path);
-          }
-          $attachment_path = "uploads/notes/" . $fileName;
+        if ($mime !== 'application/pdf') {
+          $error = "Only PDF files are allowed.";
         } else {
-          $error = "Failed to upload file.";
+          $uploadDir = __DIR__ . '/../uploads/notes/';
+          if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+          }
+
+          $fileName = 'note_' . time() . '_' . bin2hex(random_bytes(6)) . '.pdf';
+          $targetPath = $uploadDir . $fileName;
+
+          if (is_uploaded_file($file['tmp_name']) && move_uploaded_file($file['tmp_name'], $targetPath)) {
+            // Delete old file if exists and path looks like uploads/...
+            // Delete old file if exists (DB stores filename-only)
+            if (!empty($attachment_path)) {
+              $oldPath = __DIR__ . '/../uploads/notes/' . $attachment_path;
+              if (file_exists($oldPath)) {
+                @unlink($oldPath);
+              }
+            }
+            $attachment_path = $fileName;
+          } else {
+            $error = "Failed to upload file.";
+          }
         }
       }
     }
@@ -137,6 +149,7 @@ require_once "../includes/header.php";
     <small style="color: #6b7280;">Only PDF files accepted. Max size: 10MB</small>
 
     <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+      <?php echo csrf_field(); ?>
       <button type="submit">💾 Update Material</button>
       <a href="dashboard.php" style="text-decoration: none;">
         <button type="button" class="btn-secondary">❌ Cancel</button>

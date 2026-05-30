@@ -19,6 +19,7 @@ if (!$note) {
 
 // Handle deletion
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  csrf_check();
   // Delete associated file if exists
   if ($note['attachment_path'] && file_exists("../" . $note['attachment_path'])) {
     unlink("../" . $note['attachment_path']);
@@ -59,6 +60,7 @@ require_once "../includes/header.php";
   </div>
 
   <form method="POST" style="margin-top: 1.5rem;">
+    <?php echo csrf_field(); ?>
     <div style="display: flex; gap: 1rem; justify-content: center;">
       <button type="submit" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
         🗑️ Yes, Delete Permanently

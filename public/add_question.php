@@ -2,6 +2,7 @@
 require_once "../includes/db.php";
 require_once "../includes/auth.php";
 require_once "../includes/header.php";
+require_once "../includes/csrf.php";
 
 require_login();
 
@@ -9,6 +10,7 @@ $errors = [];
 $title = $year = $subject = $qtype = $description = $drive_link = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  csrf_check();
     $title = trim($_POST['title'] ?? '');
     $year  = trim($_POST['year'] ?? '');
     $subject = trim($_POST['subject'] ?? '');
@@ -65,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <textarea name="description"><?php echo htmlspecialchars($description); ?></textarea>
   </label>
 
+  <?php echo csrf_field(); ?>
   <button type="submit">Submit Folder</button>
 </form>
 

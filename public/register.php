@@ -1,6 +1,7 @@
 <?php
 // public/register.php
 require_once "../includes/db.php";
+require_once "../includes/csrf.php";
 session_start();
 
 $errors = [];
@@ -8,6 +9,7 @@ $name = "";
 $email = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  csrf_check();
   $name  = trim($_POST['name'] ?? '');
   $email = trim($_POST['email'] ?? '');
   $password = $_POST['password'] ?? '';
@@ -95,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="password" name="confirm_password" placeholder="Confirm your password" required>
           </div>
 
+          <?php echo csrf_field(); ?>
           <button type="submit" class="auth-button">Create account</button>
         </form>
 

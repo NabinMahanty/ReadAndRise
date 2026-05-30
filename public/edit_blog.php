@@ -1,6 +1,7 @@
 <?php
 require_once "../includes/db.php";
 require_once "../includes/auth.php";
+require_once "../includes/csrf.php";
 
 require_login();
 
@@ -19,6 +20,7 @@ if (!$blog) {
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  csrf_check();
   $title = trim($_POST['title'] ?? '');
   $category = trim($_POST['category'] ?? '');
   $content = trim($_POST['content'] ?? '');
@@ -88,6 +90,7 @@ require_once "../includes/header.php";
     <small style="color: #6b7280;">Share your preparation journey, challenges, strategies, and what helped you succeed.</small>
 
     <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+      <?php echo csrf_field(); ?>
       <button type="submit">💾 Update Story</button>
       <a href="dashboard.php" style="text-decoration: none;">
         <button type="button" class="btn-secondary">❌ Cancel</button>

@@ -1,6 +1,7 @@
 <?php
 require_once "../includes/db.php";
 require_once "../includes/auth.php";
+require_once "../includes/csrf.php";
 
 require_login();
 
@@ -19,6 +20,7 @@ if (!$blog) {
 
 // Handle deletion
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  csrf_check();
   $deleteStmt = $pdo->prepare("DELETE FROM blogs WHERE id = ? AND user_id = ?");
   if ($deleteStmt->execute([$blog_id, $_SESSION['user_id']])) {
     $_SESSION['success'] = "Success story deleted successfully.";
@@ -54,6 +56,7 @@ require_once "../includes/header.php";
   </div>
 
   <form method="POST" style="margin-top: 1.5rem;">
+    <?php echo csrf_field(); ?>
     <div style="display: flex; gap: 1rem; justify-content: center;">
       <button type="submit" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
         🗑️ Yes, Delete Permanently

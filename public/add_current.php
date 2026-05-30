@@ -1,6 +1,7 @@
 <?php
 require_once "../includes/db.php";
 require_once "../includes/auth.php";
+require_once "../includes/csrf.php";
 
 require_login();
 
@@ -16,33 +17,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Handle image upload
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-      $allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-      $fileType = $_FILES['image']['type'];
-      $fileSize = $_FILES['image']['size'];
+      $file = $_FILES['image'];
+      $fileSize = $file['size'];
       $maxSize = 5 * 1024 * 1024; // 5MB
 
-      if (!in_array($fileType, $allowed)) {
-        $error = "Only JPG, PNG, and WebP images are allowed.";
-      } elseif ($fileSize > $maxSize) {
+      if ($fileSize > $maxSize) {
         $error = "Image size must not exceed 5MB.";
       } else {
-        $uploadDir = "../uploads/current/";
-        if (!is_dir($uploadDir)) {
-          mkdir($uploadDir, 0755, true);
-        }
+        // Validate image MIME
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
 
-        $fileName = uniqid() . '_' . basename($_FILES['image']['name']);
-        $targetPath = $uploadDir . $fileName;
-
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-          $image_path = $fileName;
+        $allowed = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+        if (!array_key_exists($mime, $allowed)) {
+          $error = "Only JPG, PNG, and WebP images are allowed.";
         } else {
-          $error = "Failed to upload image.";
+          $ext = $allowed[$mime];
+          $uploadDir = __DIR__ . '/../uploads/current/';
+          if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+          }
+
+          $fileName = 'img_' . time() . '_' . bin2hex(random_bytes(6)) . '.' . $ext;
+          $targetPath = $uploadDir . $fileName;
+
+          if (is_uploaded_file($file['tmp_name']) && move_uploaded_file($file['tmp_name'], $targetPath)) {
+            // store filename-only; templates will prefix uploads/current/
+            $image_path = $fileName;
+          } else {
+            $error = "Failed to upload image.";
+          }
         }
       }
     }
 
     if (!isset($error)) {
+      csrf_check();
       $stmt = $pdo->prepare("
                 INSERT INTO current_affairs (user_id, title, summary, content, image_path, status)
                 VALUES (?, ?, ?, ?, ?, 'pending')
@@ -75,6 +86,7 @@ require_once "../includes/header.php";
   <?php endif; ?>
 
   <form method="POST" enctype="multipart/form-data">
+    <?php echo csrf_field(); ?>
     <label>📝 Title *</label>
     <input type="text" name="title" value="<?php echo htmlspecialchars($_POST['title'] ?? ''); ?>" required placeholder="e.g., New Defence Recruitment Policy 2025">
 

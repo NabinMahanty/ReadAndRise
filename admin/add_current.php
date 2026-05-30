@@ -3,6 +3,7 @@
 require_once __DIR__ . "/../includes/db.php";
 require_once __DIR__ . "/../includes/auth.php";
 require_once __DIR__ . "/../includes/header.php";
+require_once __DIR__ . "/../includes/csrf.php";
 
 require_admin();
 
@@ -12,7 +13,8 @@ $summary = "";
 $content = "";
 $image_name = null;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_check();
   $title = trim($_POST['title'] ?? '');
   $summary = trim($_POST['summary'] ?? '');
   $content = trim($_POST['content'] ?? '');
@@ -25,25 +27,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $file = $_FILES['image'];
 
     if ($file['error'] === 0) {
-      $allowed = ['jpg', 'jpeg', 'png', 'webp'];
-      $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+      $fileSize = $file['size'];
+      $maxSize = 2 * 1024 * 1024; // 2MB limit
 
-      if (!in_array($ext, $allowed)) {
-        $errors[] = "Only JPG/PNG/WEBP images are allowed.";
-      } elseif ($file['size'] > 2 * 1024 * 1024) { // 2MB limit
+      if ($fileSize > $maxSize) {
         $errors[] = "Image must be under 2MB.";
       } else {
-        $newName = 'ca_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
-        $uploadDir = __DIR__ . '/../uploads/current/';
-        if (!is_dir($uploadDir)) {
-          mkdir($uploadDir, 0777, true);
-        }
-        $uploadPath = $uploadDir . $newName;
+        // Validate MIME
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
 
-        if (!move_uploaded_file($file['tmp_name'], $uploadPath)) {
-          $errors[] = "Failed to upload image.";
+        $allowed = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+        if (!array_key_exists($mime, $allowed)) {
+          $errors[] = "Only JPG/PNG/WEBP images are allowed.";
         } else {
-          $image_name = $newName;
+          $ext = $allowed[$mime];
+          $newName = 'ca_' . time() . '_' . bin2hex(random_bytes(6)) . '.' . $ext;
+          $uploadDir = __DIR__ . '/../uploads/current/';
+          if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+          }
+          $uploadPath = $uploadDir . $newName;
+
+          if (!is_uploaded_file($file['tmp_name']) || !move_uploaded_file($file['tmp_name'], $uploadPath)) {
+            $errors[] = "Failed to upload image.";
+          } else {
+            // store filename-only; templates will prefix uploads/current/
+            $image_name = $newName;
+          }
         }
       }
     } else {
@@ -102,6 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </label>
 
     <div style="margin-top:10px;">
+      <?php echo csrf_field(); ?>
       <button type="submit">Publish Current Affairs</button>
     </div>
   </form>

@@ -2,6 +2,7 @@
 require_once "../includes/db.php";
 require_once "../includes/auth.php";
 require_once "../includes/header.php";
+require_once "../includes/csrf.php";
 
 require_login(); // ensure user logged in
 
@@ -20,6 +21,7 @@ function make_slug($string)
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  csrf_check();
   $title    = trim($_POST['title'] ?? '');
   $category = trim($_POST['category'] ?? '');
   $tags     = trim($_POST['tags'] ?? '');
@@ -40,27 +42,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (!empty($_FILES['note_file']['name'])) {
     $file = $_FILES['note_file'];
 
-    // validation
     if ($file['error'] === 0) {
-      $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+      // Basic size check
       $fileSize = $file['size'];
-      $maxSize = 10 * 1024 * 1024; // 10MB in bytes
+      $maxSize = 10 * 1024 * 1024; // 10MB
 
-      if ($ext !== 'pdf') {
-        $errors[] = "Only PDF files are allowed.";
-      } elseif ($fileSize > $maxSize) {
+      if ($fileSize > $maxSize) {
         $errors[] = "PDF file size must not exceed 10MB. Your file is " . round($fileSize / 1024 / 1024, 2) . "MB.";
       } else {
-        // unique filename
-        $newName = 'note_' . time() . '_' . rand(1000, 9999) . '.pdf';
-        $uploadPath = "../uploads/notes/" . $newName;
+        // Validate MIME type using finfo
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
 
-        if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-          $attachment_path = $newName;
+        if ($mime !== 'application/pdf') {
+          $errors[] = "Only PDF files are allowed.";
         } else {
-          $errors[] = "Failed to upload PDF.";
+          // ensure uploads directory exists
+          $uploadDir = __DIR__ . '/../uploads/notes/';
+          if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+          }
+
+          // unique, safe filename
+          $newName = 'note_' . time() . '_' . bin2hex(random_bytes(6)) . '.pdf';
+          $uploadPath = $uploadDir . $newName;
+
+          if (is_uploaded_file($file['tmp_name']) && move_uploaded_file($file['tmp_name'], $uploadPath)) {
+            // store filename only in DB (templates prefix uploads/notes/ when rendering)
+            $attachment_path = $newName;
+          } else {
+            $errors[] = "Failed to upload PDF.";
+          }
         }
       }
+    } else {
+      $errors[] = "Failed to upload PDF.";
     }
   }
 
@@ -152,6 +169,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <small style="color: #6b7280; display: block; margin-top: 0.25rem;">Only PDF files accepted. Max size: 10MB recommended</small>
   </label>
   <br><br>
+
+  <?php echo csrf_field(); ?>
 
   <label>
     ✍️ Content (Your detailed notes):<br>
